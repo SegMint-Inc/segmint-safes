@@ -48,6 +48,7 @@ contract SafeFactory is ISafeFactory, OwnableRoles, UpgradeHandler, Initializabl
 
     function getSafes(address account) external view returns (address[] memory deployments) {
         uint256 safeNonce = _nonce[account];
+        deployments = new address[](safeNonce);
 
         for (uint256 i = 0; i < safeNonce; i++) {
             bytes32 salt = keccak256(abi.encodePacked(account, i));
@@ -55,6 +56,10 @@ contract SafeFactory is ISafeFactory, OwnableRoles, UpgradeHandler, Initializabl
         }
 
         return deployments;
+    }
+
+    function getNonce(address account) external view returns (uint256) {
+        return _nonce[account];
     }
 
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
