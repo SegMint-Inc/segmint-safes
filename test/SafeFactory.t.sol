@@ -157,7 +157,8 @@ contract SafeFactoryTest is BaseTest {
     }
 
     function testCannot_ExecuteUpgrade_UpgradeTimeLocked_Fuzzed(uint256 badTime) public {
-        badTime = bound(badTime, block.timestamp, safeFactory.UPGRADE_TIMELOCK() - 1 seconds);
+        uint256 maxBadTime = safeFactory.UPGRADE_TIMELOCK() - 1 seconds;
+        badTime = bound(badTime, block.timestamp, maxBadTime);
 
         startHoax(users.admin);
         safeFactory.proposeUpgrade({ newImplementation: address(mockUpgrade) });
