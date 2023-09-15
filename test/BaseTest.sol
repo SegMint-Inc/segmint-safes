@@ -53,11 +53,34 @@ contract BaseTest is Base, Events, Errors {
         return user;
     }
 
+    /// Creates a {Safe} instance for `address(this)` with 3 owners and 3 quorum.
+    function createSafe() internal returns (Safe) {
+        address[] memory owners = getDefaultOwners();
+        safeFactory.createSafe({ owners: owners, quorum: owners.length });
+        
+        address[] memory userSafes = safeFactory.getSafes(address(this));
+        return Safe(payable(userSafes[0]));
+    }
+
     function getDefaultOwners() internal view returns (address[] memory owners) {
         owners = new address[](3);
         owners[0] = users.alice;
         owners[1] = users.bob;
         owners[2] = users.charlie;
+    }
+
+    /// Token Handlers
+
+    function onERC1155Received(address, address, uint256, uint256, bytes calldata) external pure returns (bytes4) {
+        return this.onERC1155Received.selector;
+    }
+
+    function onERC1155BatchReceived(address, address, uint256[] calldata, uint256[] calldata, bytes calldata)
+        external
+        pure
+        returns (bytes4)
+    {
+        return this.onERC1155BatchReceived.selector;
     }
 
 }

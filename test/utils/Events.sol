@@ -11,4 +11,7 @@ abstract contract Events {
 
     /// {IERC1967} Events.
     event Upgraded(address indexed implementation);
+
+    /// {NativeTokenReceiver} Events.
+    event NativeTokenReceived(address sender, uint256 amount);
 }
