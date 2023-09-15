@@ -9,12 +9,12 @@ interface IOwnerManager {
     /**
      * Thrown when trying to add a signer that is deemed as invalid.
      */
-    error InvalidSigner();
+    error InvalidOwner();
 
     /**
      * Thrown when attempting to add a signer that already exists.
      */
-    error DuplicateSigner();
+    error DuplicateOwner();
 
     /**
      * Thrown when the newly proposed quorum value exceeds the number of signers.
@@ -35,6 +35,16 @@ interface IOwnerManager {
      * Thrown when an invalid quorum value is provided.
      */
     error InvalidQuorumValue();
+
+    /**
+     * Thrown when no owners have been provided during initialization.
+     */
+    error NoOwnersProvided();
+
+    /**
+     * Thrown when an invalid quorum value is proposed.
+     */
+    error InvalidQuorum();
 
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
     /*                         FUNCTIONS                          */
