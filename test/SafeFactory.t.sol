@@ -21,7 +21,19 @@ contract SafeFactoryTest is BaseTest {
         assertEq(version, "1.0");
     }
 
-    function testCannot_Initialize_Twice() public {
+    function test_Initialize_Fuzzed(address randomAdmin, address randomSafe) public {
+        /// Create dummy instance of {SafeFactory} to test initialize.
+        SafeFactory factory = new SafeFactory();
+        factory.initialize({ _admin: randomAdmin, _safe: randomSafe });
+
+        assertEq(factory.owner(), address(this));
+        assertEq(factory.safe(), randomSafe);
+
+        uint256 adminRole = factory.ADMIN_ROLE();
+        assertTrue(factory.hasAllRoles(randomAdmin, adminRole));
+    }
+
+    function testCannot_Initialize_AlreadyInitialized() public {
         vm.expectRevert("Initializable: contract is already initialized");
         safeFactory.initialize({ _admin: address(0), _safe: address(0) });
     }
