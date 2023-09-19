@@ -1,92 +1,84 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.19;
 
+import { Transaction } from "../types/DataTypes.sol";
+
 /**
  * @title ISafe
- * @notice N/A
  */
-
 interface ISafe {
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
     /*                           ERRORS                           */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
     /**
-     * Thrown when trying to initialize a safe with zero signers.
+     * Thrown when the caller is not a known owner.
      */
-    error ZeroSignerAmount();
+    error CallerNotOwner();
 
     /**
-     * Thrown when trying to initialize a safe with more than the maximum number of signers.
+     * Thrown when the amount of signatures provided subceeds the quorum value.
      */
-    error OverMaxSigners();
+    error QuorumNotReached();
 
     /**
-     * Thrown when trying to unlock a zero amount of assets.
+     * Thrown when the recovered signer of a signature does not exceed the previously recovered signer.
      */
-    error ZeroAssetAmount();
+    error InvalidSignatureOrder();
 
     /**
-     * Thrown when trying to unlock an amount of assets that exceeds the movement limit in one transaction.
+     * Thrown when the recovered signer of a signature is not a known owner.
      */
-    error OverMovementLimit();
+    error SignerNotOwner();
 
     /**
-     * Thrown when the caller is not an approved signer.
+     * Thrown when the recovered signer has not approved the txn.
      */
-    error CallerNotSigner();
+    error SignerHasNotApproved();
 
     /**
-     * Thrown when a native token unlock transfer fails.
+     * Thrown when the transaction nonce doesn't match the transaction nonce.
      */
-    error NativeTokenUnlockFailed();
-
-    /**
-     * Thrown when trying to unlock an asset of class `NONE`.
-     */
-    error NoneAssetType();
+    error NonceMismatch();
 
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
-    /*                           ENUMS                            */
+    /*                           EVENTS                           */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
     /**
-     * Enum encapsulating the types of assets that can be stored in a multi-asset vault.
+     * Emitted when a transaction has successfully executed.
+     * @param txnHash EIP712 digest of the transaction.
      */
-    enum SafeAssetClass {
-        NONE,
-        ERC20,
-        ERC721,
-        ERC1155
-    }
-
-    /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
-    /*                          STRUCTS                           */
-    /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
+    event TransactionSuccess(bytes32 txnHash);
 
     /**
-     * Struct encapsulating the parameters for asset unlocking.
-     * @param class Enum defining the class of the asset.
-     * @param token Contract address of the asset.
-     * @param identifier Unique token identifier.
-     * @param amount The amount of the asset being locked.
-     * @dev For ERC721 tokens, the `amount` should always be 1.
+     * Emitted when a transaction has failed to execute.
+     * @param txnHash EIP712 digest of the transaction.
      */
-    struct SafeAsset {
-        SafeAssetClass class;
-        address token;
-        uint256 identifier;
-        uint256 amount;
-    }
+    event TransactionFailed(bytes32 txnHash);
 
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
     /*                         FUNCTIONS                          */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
     /**
-     * Function used to initialize a safe.
-     * @param owners List of intended owners.
-     * @param quorum Number of approvals required to execute actions.
+     * Function used to initialize a newly created Safe.
+     * @param owners Array of desired owners.
+     * @param quorum Number of approvals required to reach quorum.
      */
     function initialize(address[] calldata owners, uint256 quorum) external;
+
+    /**
+     * Function used to execute a Safe transaction.
+     * @param transaction Struct containing the transaction parameters.
+     * @param txnHash EIP712 digest of the provided transaction.
+     * @param signatures Signed message digests of the owner approvals.
+     */
+    function executeTransaction(Transaction memory transaction, bytes32 txnHash, bytes[] memory signatures) external;
+
+    /**
+     * Function used to approve a Safe transaction.
+     * @param txnHash EIP712 digest of the transaction.
+     */
+    function approveTxnHash(bytes32 txnHash) external;
 }
