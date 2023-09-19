@@ -3,19 +3,10 @@ pragma solidity 0.8.19;
 
 /**
  * @title ISafeFactory
- * @notice N/A
+ * @notice Interface for {SafeFactory}.
  */
 
 interface ISafeFactory {
-    /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
-    /*                           ERRORS                           */
-    /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
-
-    /**
-     * Thrown when the predicted deployment address does not match the actual deployment address.
-     */
-    error AddressMismatch();
-
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
     /*                           EVENTS                           */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
@@ -50,6 +41,12 @@ interface ISafeFactory {
      * @param account Address of the account to check.
      */
     function getSafes(address account) external view returns (address[] memory);
+
+    /**
+     * Function used to view the current nonce associated with an account.
+     * @param account Address to the view the associated nonce.
+     */
+    function getNonce(address account) external view returns (uint256);
 
     /**
      * Function used to propose an upgrade to the implementation address of {VaultFactory}.

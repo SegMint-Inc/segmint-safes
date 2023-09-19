@@ -2,21 +2,19 @@
 pragma solidity 0.8.19;
 
 import { OwnableRoles } from "solady/src/auth/OwnableRoles.sol";
-import { ECDSA } from "solady/src/utils/ECDSA.sol";
 import { LibClone } from "solady/src/utils/LibClone.sol";
 import { Initializable } from "@openzeppelin/proxy/utils/Initializable.sol";
-import { UpgradeHandler } from "../handlers/UpgradeHandler.sol";
 import { ISafeFactory } from "../interfaces/ISafeFactory.sol";
 import { ISafe } from "../interfaces/ISafe.sol";
+import { UpgradeHandler } from "../handlers/UpgradeHandler.sol";
 
 /**
  * @title SafeFactory
  * @notice See documentation for {ISafeFactory}.
  */
 
-contract SafeFactory is ISafeFactory, OwnableRoles, UpgradeHandler, Initializable {
+contract SafeFactory is ISafeFactory, OwnableRoles, Initializable, UpgradeHandler {
     using LibClone for address;
-    using ECDSA for bytes32;
 
     /// `keccak256("ADMIN_ROLE");`
     uint256 public constant ADMIN_ROLE = 0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775;
@@ -26,13 +24,18 @@ contract SafeFactory is ISafeFactory, OwnableRoles, UpgradeHandler, Initializabl
 
     mapping(address account => uint256 nonce) private _nonce;
 
+    /**
+     * @inheritdoc ISafeFactory
+     */
     function initialize(address _admin, address _safe) external initializer {
         _initializeOwner(msg.sender);
         _grantRoles(_admin, ADMIN_ROLE);
-
         safe = _safe;
     }
 
+    /**
+     * @inheritdoc ISafeFactory
+     */
     function createSafe(address[] calldata owners, uint256 quorum) external {
         uint256 nonce = _nonce[msg.sender]++;
 
@@ -46,6 +49,9 @@ contract SafeFactory is ISafeFactory, OwnableRoles, UpgradeHandler, Initializabl
         emit ISafeFactory.SafeCreated({ user: msg.sender, safe: newSafe });
     }
 
+    /**
+     * @inheritdoc ISafeFactory
+     */
     function getSafes(address account) external view returns (address[] memory deployments) {
         uint256 safeNonce = _nonce[account];
         deployments = new address[](safeNonce);
@@ -58,6 +64,9 @@ contract SafeFactory is ISafeFactory, OwnableRoles, UpgradeHandler, Initializabl
         return deployments;
     }
 
+    /**
+     * @inheritdoc ISafeFactory
+     */
     function getNonce(address account) external view returns (uint256) {
         return _nonce[account];
     }
