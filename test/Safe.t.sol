@@ -31,7 +31,7 @@ contract SafeTest is BaseTest {
     }
 
     /// @dev `initialize()` tests create a dummy safe that is only used
-    /// for testing as `setUp()` defines an already initalized safe.
+    /// for testing as `setUp()` creates an already initalized safe.
 
     function test_Initialize() public {
         Safe _safe = new Safe();
