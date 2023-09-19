@@ -40,7 +40,7 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
             address owner = owners[i];
 
             /// forgefmt: disable-next-item
-            /// Checks: Ensure `signer` is a valid address.
+            /// Checks: Ensure `owner` is a valid address.
             if (
                 owner == address(0) ||         // not zero address.
                 owner == _SENTINEL_VALUE ||    // not sentinel value.
@@ -48,7 +48,7 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
                 currentOwner == owner         // not concurrent index duplicate.
             ) revert InvalidOwner();
 
-            /// Checks: Ensure `signer` is not already an authorized signer.
+            /// Checks: Ensure `owner` is not already an authorized owner.
             if (_owners[owner] != address(0)) revert DuplicateOwner();
 
             _owners[currentOwner] = owner;
@@ -63,13 +63,13 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
     /**
      * @inheritdoc IOwnerManager
      */
-    function removeOwner(address prtOwner, address signer, uint256 newQuorum) public selfAuthorized {
+    function removeOwner(address prtOwner, address oldOwner, uint256 newQuorum) public selfAuthorized {
         if (newQuorum > _ownerCount - 1) revert RemovalBreaksQuorum();
-        if (signer == address(0) || signer == _SENTINEL_VALUE) revert InvalidOwner();
-        if (_owners[prtOwner] != signer) revert InvalidPointer();
+        if (oldOwner == address(0) || oldOwner == _SENTINEL_VALUE) revert InvalidOwner();
+        if (_owners[prtOwner] != oldOwner) revert InvalidPointer();
 
-        _owners[prtOwner] = _owners[signer];
-        _owners[signer] = address(0);
+        _owners[prtOwner] = _owners[oldOwner];
+        _owners[oldOwner] = address(0);
         _ownerCount--;
 
         if (_quroum != newQuorum) {
@@ -82,14 +82,14 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
      */
     function addOwner(address newOwner, uint256 newQuorum) public selfAuthorized {
         /// forgefmt: disable-next-item
-        /// Checks: Ensure `signer` is a valid address.
+        /// Checks: Ensure `owner` is a valid address.
         if (
             newOwner == address(0) ||      // not zero address.
             newOwner == _SENTINEL_VALUE || // not sentinel value.
             newOwner == address(this)      // not self.
         ) revert InvalidOwner();
 
-        /// Checks: Ensure `signer` is not already an authorized signer.
+        /// Checks: Ensure `owner` is not already an authorized owner.
         if (_owners[newOwner] != address(0)) revert DuplicateOwner();
 
         _owners[newOwner] = _owners[_SENTINEL_VALUE];
@@ -118,7 +118,6 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
         if (_owners[newOwner] != address(0)) revert DuplicateOwner();
 
         // Validate oldOwner address and check that it corresponds to owner index.
-        // TODO: Rename this error.
         if (oldOwner == address(0) || oldOwner == _SENTINEL_VALUE) revert InvalidOwner();
         if (_owners[prtOwner] != oldOwner) revert PointerMismatch();
 
@@ -131,7 +130,7 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
      * @inheritdoc IOwnerManager
      */
     function changeQuorum(uint256 newQuorum) public selfAuthorized {
-        // if (newQuorum == 0 || newQuorum > _ownerCount) revert InvalidQuorum();
+        if (newQuorum == 0 || newQuorum > _ownerCount) revert InvalidQuorum();
         _quroum = newQuorum;
     }
 
@@ -161,7 +160,7 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
      * @inheritdoc IOwnerManager
      */
     function isOwner(address account) public view returns (bool) {
-        return account != _SENTINEL_VALUE && _owners[account] != address(0);
+        return _isOwner(account);
     }
 
     function ownerCount() public view returns (uint256) {
@@ -173,5 +172,13 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
      */
     function getQuorum() public view returns (uint256) {
         return _quroum;
+    }
+
+    /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
+    /*                       INTERNAL LOGIC                       */
+    /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
+
+    function _isOwner(address account) internal view returns (bool) {
+        return account != _SENTINEL_VALUE && _owners[account] != address(0);
     }
 }
