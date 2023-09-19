@@ -40,6 +40,10 @@ interface IUpgradeHandler {
         uint40 deadline;
     }
 
+    /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
+    /*                           EVENTS                           */
+    /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
+
     /**
      * Emitted when a new implementation address for {SegMintVaultManager} has been proposed.
      * @param admin The admin address that proposed the upgrade.
