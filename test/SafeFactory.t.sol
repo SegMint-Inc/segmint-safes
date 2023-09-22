@@ -14,7 +14,7 @@ contract SafeFactoryTest is BaseTest {
         assertEq(safeFactory.safe(), address(safe));
 
         uint256 adminRole = safeFactory.ADMIN_ROLE();
-        assertTrue(safeFactory.hasAllRoles(users.admin, adminRole));
+        assertTrue(safeFactory.hasAllRoles(users.admin.account, adminRole));
 
         (string memory name, string memory version) = safeFactory.nameAndVersion();
         assertEq(name, "Safe Factory");
@@ -64,9 +64,9 @@ contract SafeFactoryTest is BaseTest {
     function test_ProposeUpgrade() public {
         uint40 expectedDeadline = uint40(block.timestamp + safeFactory.UPGRADE_TIMELOCK());
 
-        hoax(users.admin);
+        hoax(users.admin.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: true, checkData: true });
-        emit UpgradeProposed({ admin: users.admin, implementation: address(mockUpgrade), deadline: expectedDeadline });
+        emit UpgradeProposed({ admin: users.admin.account, implementation: address(mockUpgrade), deadline: expectedDeadline });
         safeFactory.proposeUpgrade({ newImplementation: address(mockUpgrade) });
 
         (address newImplementation, uint40 deadline) = safeFactory.upgradeProposal();
@@ -75,7 +75,7 @@ contract SafeFactoryTest is BaseTest {
     }
 
     function testCannot_ProposeUpgrade_Unauthorized_Fuzzed(address nonAdmin) public {
-        vm.assume(nonAdmin != users.admin);
+        vm.assume(nonAdmin != users.admin.account);
 
         hoax(nonAdmin);
         vm.expectRevert(Unauthorized.selector);
@@ -83,18 +83,18 @@ contract SafeFactoryTest is BaseTest {
     }
 
     function testCannot_ProposeUpgrade_ProposalInProgress() public {
-        startHoax(users.admin);
+        startHoax(users.admin.account);
         safeFactory.proposeUpgrade({ newImplementation: address(mockUpgrade) });
         vm.expectRevert(IUpgradeHandler.ProposalInProgress.selector);
         safeFactory.proposeUpgrade({ newImplementation: address(mockUpgrade) });
     }
 
     function test_CancelUpgrade() public {
-        startHoax(users.admin);
+        startHoax(users.admin.account);
         safeFactory.proposeUpgrade({ newImplementation: address(mockUpgrade) });
 
         vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: false, checkData: true });
-        emit UpgradeCancelled({ admin: users.admin, implementation: address(mockUpgrade) });
+        emit UpgradeCancelled({ admin: users.admin.account, implementation: address(mockUpgrade) });
         safeFactory.cancelUpgrade();
 
         (address newImplementation, uint40 deadline) = safeFactory.upgradeProposal();
@@ -103,7 +103,7 @@ contract SafeFactoryTest is BaseTest {
     }
 
     function testCannot_CancelUpgrade_Unauthorized_Fuzzed(address nonAdmin) public {
-        vm.assume(nonAdmin != users.admin);
+        vm.assume(nonAdmin != users.admin.account);
 
         hoax(nonAdmin);
         vm.expectRevert(Unauthorized.selector);
@@ -111,13 +111,13 @@ contract SafeFactoryTest is BaseTest {
     }
 
     function testCannot_CancelUpgrade_NoProposalExists() public {
-        hoax(users.admin);
+        hoax(users.admin.account);
         vm.expectRevert(IUpgradeHandler.NoProposalExists.selector);
         safeFactory.cancelUpgrade();
     }
 
     function test_ExecuteUpgrade() public {
-        startHoax(users.admin);
+        startHoax(users.admin.account);
         safeFactory.proposeUpgrade({ newImplementation: address(mockUpgrade) });
 
         uint256 deadline = block.timestamp + safeFactory.UPGRADE_TIMELOCK();
@@ -137,9 +137,9 @@ contract SafeFactoryTest is BaseTest {
     }
 
     function testCannot_ExecuteUpgrade_Unauthorized_Fuzzed(address nonAdmin) public {
-        vm.assume(nonAdmin != users.admin);
+        vm.assume(nonAdmin != users.admin.account);
 
-        hoax(users.admin);
+        hoax(users.admin.account);
         safeFactory.proposeUpgrade({ newImplementation: address(mockUpgrade) });
 
         uint256 deadline = block.timestamp + safeFactory.UPGRADE_TIMELOCK();
@@ -151,7 +151,7 @@ contract SafeFactoryTest is BaseTest {
     }
 
     function testCannot_ExecuteUpgrade_NoProposalExists() public {
-        hoax(users.admin);
+        hoax(users.admin.account);
         vm.expectRevert(IUpgradeHandler.NoProposalExists.selector);
         safeFactory.executeUpgrade("");
     }
@@ -160,7 +160,7 @@ contract SafeFactoryTest is BaseTest {
         uint256 maxBadTime = safeFactory.UPGRADE_TIMELOCK() - 1 seconds;
         badTime = bound(badTime, block.timestamp, maxBadTime);
 
-        startHoax(users.admin);
+        startHoax(users.admin.account);
         safeFactory.proposeUpgrade({ newImplementation: address(mockUpgrade) });
 
         vm.warp(badTime);
