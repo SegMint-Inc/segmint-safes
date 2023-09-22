@@ -9,13 +9,13 @@ import { IApprovals } from "../interfaces/IApprovals.sol";
  */
 abstract contract Approvals is IApprovals {
     /// Mapping that keeps track of which accounts have approved which transactions.
-    mapping(address account => mapping(bytes32 txnHash => bool approved)) internal _hasApprovedTxn;
+    mapping(address account => mapping(bytes32 txnHash => bool approved)) internal _approvedTxns;
 
     /**
      * @inheritdoc IApprovals
      */
     function hasApprovedTxn(address account, bytes32 txnHash) external view returns (bool) {
-        return _hasApprovedTxn[account][txnHash];
+        return _approvedTxns[account][txnHash];
     }
 
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
@@ -26,7 +26,7 @@ abstract contract Approvals is IApprovals {
      * Function used to approve a transaction hash.
      */
     function _approveTxnHash(bytes32 txnHash) internal {
-        _hasApprovedTxn[msg.sender][txnHash] = true;
+        _approvedTxns[msg.sender][txnHash] = true;
         emit TxnApproved({ account: msg.sender , txnHash: txnHash });
     }
 
