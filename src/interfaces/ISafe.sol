@@ -5,6 +5,7 @@ import { Transaction } from "../types/DataTypes.sol";
 
 /**
  * @title ISafe
+ * @notice Interface for {Safe}.
  */
 interface ISafe {
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
@@ -71,10 +72,9 @@ interface ISafe {
     /**
      * Function used to execute a Safe transaction.
      * @param transaction Struct containing the transaction parameters.
-     * @param txnHash EIP712 digest of the provided transaction.
      * @param signatures Signed message digests of the owner approvals.
      */
-    function executeTransaction(Transaction memory transaction, bytes32 txnHash, bytes[] memory signatures) external;
+    function executeTransaction(Transaction calldata transaction, bytes[] calldata signatures) external;
 
     /**
      * Function used to approve a Safe transaction.
