@@ -3,6 +3,7 @@ pragma solidity 0.8.19;
 
 import "./Base.sol";
 
+import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
 import { ISafe } from "../src/interfaces/ISafe.sol";
 import { ISafeFactory } from "../src/interfaces/ISafeFactory.sol";
 import { IOwnerManager } from "../src/interfaces/IOwnerManager.sol";
@@ -31,11 +32,38 @@ contract BaseTest is Base, Events, Errors {
     MockUpgrade public mockUpgrade;
 
     function setUp() public virtual {
+        /**
+         * @dev Tests found within `./fork` require mainnet forking to pass. Define these variables within the
+         * `.env` file and run the fork tests with `forge t --mc SafeForkTest --rpc-url mainnet`.
+         */
+        if (deployment == Deployment.FORK) {
+            vm.createSelectFork({
+                urlOrAlias: vm.envString("MAINNET_RPC_URL"),
+                blockNumber: vm.envUint("DEFAULT_FORK_BLOCK")
+            });
+        }
+
+        /// Deploy mock contracts.
+        deployMocks();
+
+        /// Create users to test with.
+        createUsers();
+
+        /// Deploy core contracts.
+        coreSetup({ admin: users.admin.account });
+
+        /// Interface proxy contract with implementation.
+        safeFactory = SafeFactory(address(safeFactoryProxy));
+    }
+
+    function deployMocks() internal {
         mockERC20 = new MockERC20();
         mockERC721 = new MockERC721();
         mockERC1155 = new MockERC1155();
         mockUpgrade = new MockUpgrade();
+    }
 
+    function createUsers() internal {
         users = Users({
             admin: createUser("Admin"),
             alice: createUser("Alice"),
@@ -43,12 +71,6 @@ contract BaseTest is Base, Events, Errors {
             charlie: createUser("Charlie"),
             eve: createUser("Eve")
         });
-
-        /// Deploy core contracts.
-        coreSetup({ admin: users.admin.account });
-
-        /// Interface proxy contract with implementation.
-        safeFactory = SafeFactory(address(safeFactoryProxy));
     }
 
     /// Test Helpers
