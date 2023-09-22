@@ -32,6 +32,11 @@ contract Safe is
     /// Transaction nonce.
     uint256 public nonce;
 
+    modifier onlyOwners {
+        _onlyOwners();
+        _;
+    }
+
     /**
      * @inheritdoc ISafe
      */
@@ -43,14 +48,12 @@ contract Safe is
      * @inheritdoc ISafe
      * @dev `signatures` must be provided in ascending order from the 'lowest' signer address to the 'highest'.
      */
-    function executeTransaction(Transaction memory transaction, bytes32 txnHash, bytes[] memory signatures) external {
-        /// Checks: Ensure `msg.sender` is a known owner.
-        if (!_isOwner(msg.sender)) revert CallerNotOwner();
-
+    function executeTransaction(Transaction calldata transaction, bytes[] calldata signatures) external onlyOwners {
         /// Checks: Ensure a valid number of signatures have been provided.
         if (signatures.length < _quroum) revert QuorumNotReached();
 
-        /// Checks: Ensure a valid nonce has been provided.
+        /// Checks: Ensure a valid nonce has been provided and update the current nonce.
+        if (transaction.nonce != nonce++) revert NonceMismatch();
 
         /// Get the EIP712 digest of the transaction.
         bytes32 txnHash = _encodeTransaction(transaction);
@@ -70,11 +73,7 @@ contract Safe is
     /**
      * @inheritdoc ISafe
      */
-    function approveTxnHash(bytes32 txnHash) external {
-        /// Checks: Ensure the caller is a known owner.
-        if (!_isOwner(msg.sender)) revert CallerNotOwner();
-
-        /// Acknowledge the transaction hash as being approved by `msg.sender`.
+    function approveTxnHash(bytes32 txnHash) external onlyOwners {
         _approveTxnHash(txnHash);
     }
 
@@ -82,17 +81,20 @@ contract Safe is
     /*                       INTERNAL LOGIC                       */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
-    function _validateSignatures(bytes32 txnHash, bytes[] memory signatures) internal {
-        /// Push `_quorum` value to the stack.
-        uint256 quorum = _quroum;
-
+    /**
+     * Function used to validate the provided signatures and check that each of the recovered
+     * signers has approved the given transaction hash. By successful execution of this
+     * function, it should be guaranteed that the quorum value has been met and that all of
+     * the recovered signers are unique.
+     */
+    function _validateSignatures(bytes32 txnHash, bytes[] calldata signatures) internal view {
         address lastSigner = address(0);
 
         for (uint256 i = 0; i < signatures.length; i++) {
             /// Cache the signature.
             bytes memory signature = signatures[i];
 
-            /// Recover the signer. EIP-2098 signatures should not be accepted.
+            /// Recover the signer. By default, EIP-2908 signatures are not supported.
             address recoveredSigner = txnHash.recover(signature);
 
             /// Checks: Ensure the recovered signer is an owner.
@@ -102,11 +104,19 @@ contract Safe is
             if (recoveredSigner <= lastSigner) revert InvalidSignatureOrder();
 
             /// Checks: Ensure the signer has approved the txn.
-            if (!_hasApprovedTxn[recoveredSigner][txnHash]) revert SignerHasNotApproved();
+            if (!_approvedTxns[recoveredSigner][txnHash]) revert SignerHasNotApproved();
 
             /// Update the `lastSigner` and continue iterating.
             lastSigner = recoveredSigner;
         }
+    }
+
+    /**
+     * Function used to ensure that the caller is a known owner.
+     */
+    function _onlyOwners() internal view {
+        /// Checks: Ensure `msg.sender` is a known owner.
+        if (!_isOwner(msg.sender)) revert CallerNotOwner();
     }
 
 }
