@@ -1,0 +1,11 @@
+{
+    "extends": "solhint:recommended",
+    "rules": {
+        "compiler-version": ["error", "^0.8.19"],
+        "func-name-mixedcase": "ignore",
+        "no-empty-blocks": "ignore",
+        "private-vars-leading-underscore": "ignore",
+        "function-name-mixedcase": "ignore",
+        "avoid-low-level-calls": "ignore"
+    }
+}
