@@ -6,11 +6,7 @@ import { Transaction } from "../../src/types/DataTypes.sol";
 
 contract MockEncoder is TransactionEncoder {
 
-    function mockEncodeTransaction(Transaction memory transaction) public returns (bytes32) {
-        return _encodeTransaction(transaction);
-    }
-
-    function mockDomainNameAndVersion() public returns (string memory name, string memory version) {
+    function mockDomainNameAndVersion() public pure returns (string memory name, string memory version) {
         return _domainNameAndVersion();
     }
 
