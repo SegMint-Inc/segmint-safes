@@ -63,14 +63,20 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
     /**
      * @inheritdoc IOwnerManager
      */
-    function removeOwner(address prtOwner, address oldOwner, uint256 newQuorum) public selfAuthorized {
-        if (newQuorum > _ownerCount - 1) revert RemovalBreaksQuorum();
-        if (oldOwner == address(0) || oldOwner == _SENTINEL_VALUE) revert InvalidOwner();
-        if (_owners[prtOwner] != oldOwner) revert InvalidPointer();
+    function addOwner(address newOwner, uint256 newQuorum) public selfAuthorized {
+        /// Checks: Ensure `owner` is a valid address.
+        if (newOwner == address(0) || newOwner == _SENTINEL_VALUE || newOwner == address(this)) revert InvalidOwner();
 
-        _owners[prtOwner] = _owners[oldOwner];
-        _owners[oldOwner] = address(0);
-        _ownerCount--;
+        /// Checks: Ensure `owner` is not already an authorized owner.
+        if (_owners[newOwner] != address(0)) revert DuplicateOwner();
+
+        _owners[newOwner] = _owners[_SENTINEL_VALUE];
+        _owners[_SENTINEL_VALUE] = newOwner;
+
+        _ownerCount++;
+        
+        /// Emit event after owner address has been set in storage and count has been updated.
+        emit OwnerAdded({ account: newOwner });
 
         if (_quroum != newQuorum) {
             changeQuorum(newQuorum);
@@ -80,22 +86,17 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
     /**
      * @inheritdoc IOwnerManager
      */
-    function addOwner(address newOwner, uint256 newQuorum) public selfAuthorized {
-        /// forgefmt: disable-next-item
-        /// Checks: Ensure `owner` is a valid address.
-        if (
-            newOwner == address(0) ||      // not zero address.
-            newOwner == _SENTINEL_VALUE || // not sentinel value.
-            newOwner == address(this)      // not self.
-        ) revert InvalidOwner();
+    function removeOwner(address prtOwner, address oldOwner, uint256 newQuorum) public selfAuthorized {
+        if (newQuorum > _ownerCount - 1) revert RemovalBreaksQuorum();
+        if (oldOwner == address(0) || oldOwner == _SENTINEL_VALUE) revert InvalidOwner();
+        if (_owners[prtOwner] != oldOwner) revert InvalidPointer();
 
-        /// Checks: Ensure `owner` is not already an authorized owner.
-        if (_owners[newOwner] != address(0)) revert DuplicateOwner();
+        _owners[prtOwner] = _owners[oldOwner];
+        _owners[oldOwner] = address(0);
+        _ownerCount--;
 
-        _owners[newOwner] = _owners[_SENTINEL_VALUE];
-        _owners[_SENTINEL_VALUE] = newOwner;
-
-        _ownerCount++;
+        /// Emit event after owner address has been cleared in storage and count has been updated.
+        emit OwnerRemoved({ account: oldOwner });
 
         if (_quroum != newQuorum) {
             changeQuorum(newQuorum);
@@ -106,13 +107,8 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
      * @inheritdoc IOwnerManager
      */
     function swapOwner(address prtOwner, address oldOwner, address newOwner) public selfAuthorized {
-        /// forgefmt: disable-next-item
         // Owner address cannot be null, the sentinel or the Safe itself.
-        if (
-            newOwner == address(0) ||      // not zero address.
-            newOwner == _SENTINEL_VALUE || // not sentinel value.
-            newOwner == address(this)      // not self.
-        ) revert InvalidOwner();
+        if (newOwner == address(0) || newOwner == _SENTINEL_VALUE || newOwner == address(this)) revert InvalidOwner();
 
         // No duplicate owners allowed.
         if (_owners[newOwner] != address(0)) revert DuplicateOwner();
@@ -124,6 +120,8 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
         _owners[newOwner] = _owners[oldOwner];
         _owners[prtOwner] = newOwner;
         _owners[oldOwner] = address(0);
+
+        emit OwnerSwapped(oldOwner, newOwner);
     }
 
     /**
@@ -131,7 +129,11 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
      */
     function changeQuorum(uint256 newQuorum) public selfAuthorized {
         if (newQuorum == 0 || newQuorum > _ownerCount) revert InvalidQuorum();
+
+        uint256 oldQuorum = _quroum;
         _quroum = newQuorum;
+
+        emit QuorumChanged(oldQuorum, newQuorum);
     }
 
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
