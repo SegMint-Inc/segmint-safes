@@ -18,13 +18,16 @@ abstract contract TransactionEncoder is ITransactionEncoder, EIP712 {
      * @inheritdoc ITransactionEncoder
      */
     function encodeTransaction(Transaction memory transaction) public view returns (bytes32) {
-        _encodeTransaction(transaction);
+        return _encodeTransaction(transaction);
     }
 
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
     /*                       INTERNAL LOGIC                       */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
+    /**
+     * Function used to return the EIP712 digest of a `Transaction` struct.
+     */
     function _encodeTransaction(Transaction memory transaction) internal view returns (bytes32) {
         return _hashTypedData(keccak256(abi.encodePacked(
             _TRANSACTION_TYPEHASH,
