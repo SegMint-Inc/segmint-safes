@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.19;
 
-import "./BaseTest.sol";
+import "../BaseTest.sol";
 
 contract SafeFactoryTest is BaseTest {
 
