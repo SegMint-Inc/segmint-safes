@@ -165,6 +165,9 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
         return _isOwner(account);
     }
 
+    /**
+     * @inheritdoc IOwnerManager
+     */
     function ownerCount() public view returns (uint256) {
         return _ownerCount;
     }

@@ -120,6 +120,11 @@ interface IOwnerManager {
     function isOwner(address account) external view returns (bool);
 
     /**
+     * Function used to view the current number of owners.
+     */
+    function ownerCount() external view returns (uint256);
+
+    /**
      * Function used to view the current quorum value.
      */
     function getQuorum() external view returns (uint256);
