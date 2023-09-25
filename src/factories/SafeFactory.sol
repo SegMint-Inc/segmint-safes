@@ -10,7 +10,7 @@ import { UpgradeHandler } from "../handlers/UpgradeHandler.sol";
 
 /**
  * @title SafeFactory
- * @notice See documentation for {ISafeFactory}.
+ * @notice Creates new instances of {Safe}.
  */
 
 contract SafeFactory is ISafeFactory, OwnableRoles, Initializable, UpgradeHandler {

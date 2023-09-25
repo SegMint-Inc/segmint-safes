@@ -14,7 +14,7 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
     address internal constant _SENTINEL_VALUE = address(0x01);
 
     /// Linked list of approved signers.
-    mapping(address prevOwner => address owner) internal _owners;
+    mapping(address ptrOwner => address owner) internal _owners;
 
     /// Number of signers associated with the Safe.
     uint256 internal _ownerCount;
@@ -72,7 +72,6 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
 
         _owners[newOwner] = _owners[_SENTINEL_VALUE];
         _owners[_SENTINEL_VALUE] = newOwner;
-
         _ownerCount++;
 
         /// Emit event after owner address has been set in storage and count has been updated.
@@ -128,6 +127,7 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
      * @inheritdoc IOwnerManager
      */
     function changeQuorum(uint256 newQuorum) public selfAuthorized {
+        /// Checks: Ensure the new quorum value is neither 0 or greater than the owner count.
         if (newQuorum == 0 || newQuorum > _ownerCount) revert InvalidQuorum();
 
         uint256 oldQuorum = _quroum;

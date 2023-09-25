@@ -17,6 +17,10 @@ import { TransactionEncoder } from "./utils/TransactionEncoder.sol";
 
 import { Transaction } from "./types/DataTypes.sol";
 
+/**
+ * @title Safe
+ * @notice Implements the logic associated with a SegMint Safe.
+ */
 contract Safe is
     ISafe,
     SelfAuthorized,
@@ -94,7 +98,7 @@ contract Safe is
 
         for (uint256 i = 0; i < signatures.length; i++) {
             /// Cache the signature.
-            bytes memory signature = signatures[i];
+            bytes calldata signature = signatures[i];
 
             /// Recover the signer. By default, EIP-2908 signatures are not supported.
             address recoveredSigner = txnHash.recover(signature);

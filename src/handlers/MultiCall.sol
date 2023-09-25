@@ -5,7 +5,7 @@ import { SelfAuthorized } from "../utils/SelfAuthorized.sol";
 
 /**
  * @title MultiCall
- * @notice Used to batch nonpayable calls.
+ * @notice Used to batch multiple nonpayable calls in a single transaction.
  */
 abstract contract MultiCall is SelfAuthorized {
     /**
@@ -14,14 +14,14 @@ abstract contract MultiCall is SelfAuthorized {
     error ArrayLengthMismatch();
 
     /**
-     * Thrown when a call to an external address fails.
+     * Thrown when a call fails.
      */
     error CallFailed();
 
     /**
      * Function used to execute an array of payloads to an array of targets.
      * @param targets Array of addresses to call.
-     * @param payloads Array of calldata to forward to each address.
+     * @param payloads Array of calldata to forward to each target address.
      */
     function multicall(address[] calldata targets, bytes[] calldata payloads) public selfAuthorized {
         if (targets.length != payloads.length) revert ArrayLengthMismatch();

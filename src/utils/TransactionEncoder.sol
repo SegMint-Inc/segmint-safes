@@ -7,7 +7,7 @@ import { Transaction } from "../types/DataTypes.sol";
 
 /**
  * @title TransactionEncoder
- * @notice Used to encode a `Transaction` struct in accordance with EIP712.
+ * @notice Encodes a `Transaction` struct in accordance with EIP712.
  */
 abstract contract TransactionEncoder is ITransactionEncoder, EIP712 {
     /// @dev keccak256("Transaction(uint8 operation,address to,uint256 value,bytes data,uint256 nonce)");

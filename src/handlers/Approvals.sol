@@ -5,7 +5,7 @@ import { IApprovals } from "../interfaces/IApprovals.sol";
 
 /**
  * @title Approvals
- * @notice Used to handle transaction approvals.
+ * @notice Handles transaction approvals.
  */
 abstract contract Approvals is IApprovals {
     /// Mapping that keeps track of which accounts have approved which transactions.

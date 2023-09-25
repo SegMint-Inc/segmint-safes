@@ -5,6 +5,7 @@ import { Transaction } from "../types/DataTypes.sol";
 
 /**
  * @title ITransactionEncoder
+ * @notice Interface for {TransactionEncoder}.
  */
 interface ITransactionEncoder {
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/

@@ -14,7 +14,6 @@ abstract contract TransactionExecutor {
 
     /**
      * Function used to execute a Safe transaction.
-     * @dev `transaction.value` will be ignored in the case of a `delegatecall` operation.
      */
     function _executeTransaction(Transaction memory transaction) internal returns (bool success) {
         if (transaction.operation == Operation.CALL) {

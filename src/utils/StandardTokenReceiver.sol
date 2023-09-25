@@ -3,7 +3,8 @@ pragma solidity 0.8.19;
 
 /**
  * @title StandardTokenReceiver
- * @notice Allows the receival of ERC721 and ERC1155 tokens.
+ * @notice Allows the receival of ERC721 and ERC1155 tokens that are sent using
+ * either `safeTransferFrom` or `safeBatchTransferFrom`.
  */
 abstract contract StandardTokenReceiver {
     /**
