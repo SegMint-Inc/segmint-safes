@@ -9,7 +9,6 @@ contract SafeTest is BaseTest {
     function setUp() public override {
         super.setUp();
         userSafe = createSafe();
-        /// Creates a safe for `address(this)`.
     }
 
     /// @dev Ensures that `userSafe` has been correctly initialized.
@@ -76,7 +75,6 @@ contract SafeTest is BaseTest {
 
         vm.expectRevert(IOwnerManager.InvalidQuorum.selector);
         _safe.initialize({ owners: owners, quorum: owners.length + 1 });
-        /// Test max case.
     }
 
     function testCannot_Initialize_InvalidOwner_ZeroAddress() public {

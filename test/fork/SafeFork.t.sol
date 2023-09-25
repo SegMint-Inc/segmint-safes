@@ -3,9 +3,13 @@ pragma solidity 0.8.19;
 
 import "../BaseTest.sol";
 
+/**
+ * @dev Tests that require a fork of mainnet to pass.
+ */
 contract SafeForkTest is BaseTest {
     Safe public userSafe;
 
+    /// Respective mainnet addresses.
     address public constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     address public constant USDT = 0xdAC17F958D2ee523a2206206994597C13D831ec7;
     address public constant USDC = 0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48;
@@ -17,7 +21,6 @@ contract SafeForkTest is BaseTest {
     function setUp() public override {
         super.setUp();
         userSafe = createSafe();
-        /// Creates a safe for `address(this)`.
     }
 
     function test_ExecuteTransaction_WETHDeposit() public {
@@ -34,7 +37,7 @@ contract SafeForkTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         bytes[] memory signatures = getOrderedSignatures(txnHash);
 
@@ -62,7 +65,7 @@ contract SafeForkTest is BaseTest {
             Transaction({ operation: Operation.CALL, to: USDT, value: 0, data: callData, nonce: userSafe.nonce() });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         bytes[] memory signatures = getOrderedSignatures(txnHash);
 
@@ -90,7 +93,7 @@ contract SafeForkTest is BaseTest {
             Transaction({ operation: Operation.CALL, to: USDC, value: 0, data: callData, nonce: userSafe.nonce() });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         bytes[] memory signatures = getOrderedSignatures(txnHash);
 
@@ -140,7 +143,7 @@ contract SafeForkTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         bytes[] memory signatures = getOrderedSignatures(txnHash);
 
@@ -194,7 +197,7 @@ contract SafeForkTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         bytes[] memory signatures = getOrderedSignatures(txnHash);
 
@@ -233,7 +236,7 @@ contract SafeForkTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         bytes[] memory signatures = getOrderedSignatures(txnHash);
 
@@ -253,25 +256,5 @@ contract SafeForkTest is BaseTest {
 
         assertEq(IERC20(USDC).balanceOf(users.bob.account), 0);
         assertEq(IERC20(USDT).balanceOf(users.bob.account), 0);
-    }
-
-    /* Helper Functions */
-
-    /// @dev Helper function to approve a transaction hash with all Safe owners.
-    function approveWithOwners(bytes32 txnHash) internal {
-        hoax(users.alice.account);
-        vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: false, checkData: true });
-        emit TxnApproved({ account: users.alice.account, txnHash: txnHash });
-        userSafe.approveTxnHash(txnHash);
-
-        hoax(users.bob.account);
-        vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: false, checkData: true });
-        emit TxnApproved({ account: users.bob.account, txnHash: txnHash });
-        userSafe.approveTxnHash(txnHash);
-
-        hoax(users.charlie.account);
-        vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: false, checkData: true });
-        emit TxnApproved({ account: users.charlie.account, txnHash: txnHash });
-        userSafe.approveTxnHash(txnHash);
     }
 }

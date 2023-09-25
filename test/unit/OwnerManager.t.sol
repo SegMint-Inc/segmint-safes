@@ -3,13 +3,12 @@ pragma solidity 0.8.19;
 
 import "../BaseTest.sol";
 
-contract NativeTokenReceiverTest is BaseTest {
+contract OwnerManagerTest is BaseTest {
     Safe public userSafe;
 
     function setUp() public override {
         super.setUp();
         userSafe = createSafe();
-        /// Creates a safe for `address(this)`.
     }
 
     /// @dev Whilst `Eve` is our assigned malicious user, we will use her
@@ -26,22 +25,30 @@ contract NativeTokenReceiverTest is BaseTest {
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
 
-        hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit OwnerAdded({ account: users.eve.account });
+
+        vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
+        emit TransactionSuccess({ txnHash: txnHash });
+
+        hoax(users.alice.account);
         userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
 
         assertEq(userSafe.nonce(), 1);
         assertEq(userSafe.getQuorum(), initQuorum);
-        assertTrue(userSafe.isOwner(users.eve.account));
 
         address[] memory owners = userSafe.getOwners();
-        uint256 numOwners = userSafe.ownerCount();
-        assertEq(owners.length, numOwners);
+        assertEq(userSafe.ownerCount(), owners.length);
+
+        assertTrue(userSafe.isOwner(users.alice.account));
+        assertTrue(userSafe.isOwner(users.bob.account));
+        assertTrue(userSafe.isOwner(users.charlie.account));
+        assertTrue(userSafe.isOwner(users.eve.account));
     }
 
     function test_AddOwner_QuorumChange() public {
-        uint256 newQuorum = userSafe.getQuorum() + 1;
+        uint256 oldQuorum = userSafe.getQuorum();
+        uint256 newQuorum = oldQuorum + 1;
 
         bytes memory callData = abi.encodeWithSelector(IOwnerManager.addOwner.selector, users.eve.account, newQuorum);
 
@@ -51,23 +58,28 @@ contract NativeTokenReceiverTest is BaseTest {
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
 
-        hoax(users.alice.account);
-
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit OwnerAdded({ account: users.eve.account });
 
         vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: false, checkData: true });
-        emit QuorumChanged({ oldQuorum: newQuorum - 1, newQuorum: newQuorum });
+        emit QuorumChanged({ oldQuorum: oldQuorum, newQuorum: newQuorum });
 
+        vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
+        emit TransactionSuccess({ txnHash: txnHash });
+
+        hoax(users.alice.account);
         userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
 
         assertEq(userSafe.nonce(), 1);
         assertEq(userSafe.getQuorum(), newQuorum);
-        assertTrue(userSafe.isOwner(users.eve.account));
 
         address[] memory owners = userSafe.getOwners();
-        uint256 numOwners = userSafe.ownerCount();
-        assertEq(owners.length, numOwners);
+        assertEq(userSafe.ownerCount(), owners.length);
+
+        assertTrue(userSafe.isOwner(users.alice.account));
+        assertTrue(userSafe.isOwner(users.bob.account));
+        assertTrue(userSafe.isOwner(users.charlie.account));
+        assertTrue(userSafe.isOwner(users.eve.account));
     }
 
     function testCannot_AddOwner_CallerNotSelf_Fuzzed(address notSafe) public {
@@ -88,9 +100,10 @@ contract NativeTokenReceiverTest is BaseTest {
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
 
-        hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit TransactionFailed({ txnHash: txnHash });
+        
+        hoax(users.alice.account);
         userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
     }
 

@@ -9,7 +9,6 @@ contract StandardTokenReceiverTest is BaseTest {
     function setUp() public override {
         super.setUp();
         userSafe = createSafe();
-        /// Creates a safe for `address(this)`.
     }
 
     function test_OnERC721Received_Fuzzed(uint256 tokenId) public {
