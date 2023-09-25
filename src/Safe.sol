@@ -7,6 +7,7 @@ import { ISafe } from "./interfaces/ISafe.sol";
 
 import { OwnerManager } from "./managers/OwnerManager.sol";
 import { Approvals } from "./handlers/Approvals.sol";
+import { MultiCall } from "./handlers/MultiCall.sol";
 
 import { SelfAuthorized } from "./utils/SelfAuthorized.sol";
 import { NativeTokenReceiver } from "./utils/NativeTokenReceiver.sol";
@@ -22,6 +23,7 @@ contract Safe is
     Initializable,
     OwnerManager,
     Approvals,
+    MultiCall,
     NativeTokenReceiver,
     StandardTokenReceiver,
     TransactionExecutor,
