@@ -10,7 +10,6 @@ import { Transaction } from "../types/DataTypes.sol";
  * @notice Used to encode a `Transaction` struct in accordance with EIP712.
  */
 abstract contract TransactionEncoder is ITransactionEncoder, EIP712 {
-
     /// @dev keccak256("Transaction(uint8 operation,address to,uint256 value,bytes data,uint256 nonce)");
     bytes32 private constant _TRANSACTION_TYPEHASH = 0x50b485665d49aaf8f3dd2ff8d505569748e3466ae4f543247e673b667008bd66;
 
@@ -29,14 +28,18 @@ abstract contract TransactionEncoder is ITransactionEncoder, EIP712 {
      * Function used to return the EIP712 digest of a `Transaction` struct.
      */
     function _encodeTransaction(Transaction memory transaction) internal view returns (bytes32) {
-        return _hashTypedData(keccak256(abi.encodePacked(
-            _TRANSACTION_TYPEHASH,
-            transaction.operation,
-            transaction.to,
-            transaction.value,
-            keccak256(transaction.data),
-            transaction.nonce
-        )));
+        return _hashTypedData(
+            keccak256(
+                abi.encodePacked(
+                    _TRANSACTION_TYPEHASH,
+                    transaction.operation,
+                    transaction.to,
+                    transaction.value,
+                    keccak256(transaction.data),
+                    transaction.nonce
+                )
+            )
+        );
     }
 
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
@@ -50,5 +53,4 @@ abstract contract TransactionEncoder is ITransactionEncoder, EIP712 {
         name = "SegMint Safe";
         version = "1.0";
     }
-
 }

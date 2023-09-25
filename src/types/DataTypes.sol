@@ -22,5 +22,5 @@ struct Transaction {
     address to;
     uint256 value;
     bytes data;
-    uint256 nonce; 
+    uint256 nonce;
 }

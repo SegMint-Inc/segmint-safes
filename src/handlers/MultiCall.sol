@@ -31,5 +31,4 @@ abstract contract MultiCall is SelfAuthorized {
             if (!success) revert CallFailed();
         }
     }
-
 }

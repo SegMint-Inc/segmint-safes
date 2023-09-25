@@ -8,7 +8,8 @@ contract NativeTokenReceiverTest is BaseTest {
 
     function setUp() public override {
         super.setUp();
-        userSafe = createSafe();  /// Creates a safe for `address(this)`.
+        userSafe = createSafe();
+        /// Creates a safe for `address(this)`.
     }
 
     function test_Receive_Fuzzed(uint256 msgValue) public {
@@ -21,5 +22,4 @@ contract NativeTokenReceiverTest is BaseTest {
 
         assertEq(address(userSafe).balance, msgValue);
     }
-
 }

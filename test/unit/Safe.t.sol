@@ -8,14 +8,15 @@ contract SafeTest is BaseTest {
 
     function setUp() public override {
         super.setUp();
-        userSafe = createSafe();  /// Creates a safe for `address(this)`.
+        userSafe = createSafe();
+        /// Creates a safe for `address(this)`.
     }
 
     /// @dev Ensures that `userSafe` has been correctly initialized.
     function test_Safe_Deployment() public {
         address[] memory owners = getDefaultOwners();
         address[] memory safeOwners = userSafe.getOwners();
-        
+
         assertEq(owners.length, safeOwners.length);
         assertEq(userSafe.nonce(), 0);
         assertEq(userSafe.ownerCount(), safeOwners.length);
@@ -64,7 +65,7 @@ contract SafeTest is BaseTest {
     function testCannot_Initialize_InvalidQuorum_ZeroValue() public {
         Safe _safe = new Safe();
         address[] memory owners = getDefaultOwners();
-        
+
         vm.expectRevert(IOwnerManager.InvalidQuorum.selector);
         _safe.initialize({ owners: owners, quorum: 0 });
     }
@@ -74,23 +75,24 @@ contract SafeTest is BaseTest {
         address[] memory owners = getDefaultOwners();
 
         vm.expectRevert(IOwnerManager.InvalidQuorum.selector);
-        _safe.initialize({ owners: owners, quorum: owners.length + 1 });  /// Test max case.
+        _safe.initialize({ owners: owners, quorum: owners.length + 1 });
+        /// Test max case.
     }
 
     function testCannot_Initialize_InvalidOwner_ZeroAddress() public {
         Safe _safe = new Safe();
         address[] memory owners = getDefaultOwners();
-        owners[0] = address(0);  // Zero address case. [0, bob, charlie]
-        
+        owners[0] = address(0); // Zero address case. [0, bob, charlie]
+
         vm.expectRevert(IOwnerManager.InvalidOwner.selector);
         _safe.initialize({ owners: owners, quorum: owners.length });
     }
-    
+
     function testCannot_Initialize_InvalidOwner_SentinelValue() public {
         Safe _safe = new Safe();
         address[] memory owners = getDefaultOwners();
-        owners[0] = address(0x01);  // Sentinel address case. [sentinel, bob, charlie]
-        
+        owners[0] = address(0x01); // Sentinel address case. [sentinel, bob, charlie]
+
         vm.expectRevert(IOwnerManager.InvalidOwner.selector);
         _safe.initialize({ owners: owners, quorum: owners.length });
     }
@@ -98,8 +100,8 @@ contract SafeTest is BaseTest {
     function testCannot_Initialize_InvalidOwner_Self() public {
         Safe _safe = new Safe();
         address[] memory owners = getDefaultOwners();
-        owners[0] = address(_safe);  // Safe address case. [safe, bob, charlie]
-        
+        owners[0] = address(_safe); // Safe address case. [safe, bob, charlie]
+
         vm.expectRevert(IOwnerManager.InvalidOwner.selector);
         _safe.initialize({ owners: owners, quorum: owners.length });
     }
@@ -107,8 +109,8 @@ contract SafeTest is BaseTest {
     function testCannot_Initialize_InvalidOwner_SequentialDuplicate() public {
         Safe _safe = new Safe();
         address[] memory owners = getDefaultOwners();
-        owners[1] = owners[0];  // Sequential duplicate case. [alice, alice, charlie]
-        
+        owners[1] = owners[0]; // Sequential duplicate case. [alice, alice, charlie]
+
         vm.expectRevert(IOwnerManager.InvalidOwner.selector);
         _safe.initialize({ owners: owners, quorum: owners.length });
     }
@@ -116,8 +118,8 @@ contract SafeTest is BaseTest {
     function testCannot_Initialize_DuplicateOwner() public {
         Safe _safe = new Safe();
         address[] memory owners = getDefaultOwners();
-        owners[2] = owners[0];  // Non-sequential duplicate case. [alice, bob, alice]
-        
+        owners[2] = owners[0]; // Non-sequential duplicate case. [alice, bob, alice]
+
         vm.expectRevert(IOwnerManager.DuplicateOwner.selector);
         _safe.initialize({ owners: owners, quorum: owners.length });
     }
@@ -172,7 +174,7 @@ contract SafeTest is BaseTest {
 
         startHoax(users.alice.account);
         userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
-        
+
         assertEq(mockERC721.ownerOf(tokenId), address(userSafe));
         assertEq(mockERC721.balanceOf(address(userSafe)), 1);
     }
@@ -188,20 +190,11 @@ contract SafeTest is BaseTest {
         assertEq(mockERC721.ownerOf(tokenId), address(userSafe));
 
         /// `transferFrom(address,address,uint256)`
-        bytes memory callData = abi.encodeWithSelector(
-            mockERC721.transferFrom.selector,
-            address(userSafe),
-            users.bob.account,
-            tokenId
-        );
+        bytes memory callData =
+            abi.encodeWithSelector(mockERC721.transferFrom.selector, address(userSafe), users.bob.account, tokenId);
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(mockERC721),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(mockERC721), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -271,21 +264,11 @@ contract SafeTest is BaseTest {
 
         /// `safeTransferFrom(address,address,uint256,uint256,bytes)`
         bytes memory callData = abi.encodeWithSelector(
-            mockERC1155.safeTransferFrom.selector,
-            address(userSafe),
-            users.bob.account,
-            tokenId,
-            amount,
-            ""
+            mockERC1155.safeTransferFrom.selector, address(userSafe), users.bob.account, tokenId, amount, ""
         );
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(mockERC1155),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(mockERC1155), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -302,19 +285,10 @@ contract SafeTest is BaseTest {
         deal({ token: address(mockERC20), to: address(userSafe), give: amount });
         assertEq(mockERC20.balanceOf(address(userSafe)), amount);
 
-        bytes memory callData = abi.encodeWithSelector(
-            mockERC20.transfer.selector,
-            users.bob.account,
-            amount
-        );
+        bytes memory callData = abi.encodeWithSelector(mockERC20.transfer.selector, users.bob.account, amount);
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(mockERC20),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(mockERC20), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -328,19 +302,14 @@ contract SafeTest is BaseTest {
 
     function test_ExecuteTransaction_NativeTokenTransfer_Fuzzed(uint256 msgValue) public {
         msgValue = bound(msgValue, 1 wei, 100 ether);
-        
+
         vm.deal(address(userSafe), msgValue);
         assertEq(address(userSafe).balance, msgValue);
 
         address receiver = address(0xbabe);
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: receiver,
-            value: msgValue,
-            data: "",
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: receiver, value: msgValue, data: "", nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -370,13 +339,8 @@ contract SafeTest is BaseTest {
 
     function testCannot_ExecuteTransaction_QuorumNotReached() public {
         bytes[] memory signatures = new bytes[](1);
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: users.alice.account,
-            value: 0 ether,
-            data: "",
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: users.alice.account, value: 0 ether, data: "", nonce: 0 });
 
         hoax(users.alice.account);
         vm.expectRevert(ISafe.QuorumNotReached.selector);
@@ -402,13 +366,8 @@ contract SafeTest is BaseTest {
     }
 
     function testCannot_ExecuteTransaction_SignerNotOwner() public {
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: users.alice.account,
-            value: 0 ether,
-            data: "",
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: users.alice.account, value: 0 ether, data: "", nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -423,13 +382,8 @@ contract SafeTest is BaseTest {
     }
 
     function testCannot_ExecuteTransaction_InvalidSignatureOrder() public {
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: users.alice.account,
-            value: 0 ether,
-            data: "",
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: users.alice.account, value: 0 ether, data: "", nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -440,13 +394,8 @@ contract SafeTest is BaseTest {
     }
 
     function testCannot_ExecuteTransaction_SignerHasNotApproved() public {
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: users.alice.account,
-            value: 0 ether,
-            data: "",
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: users.alice.account, value: 0 ether, data: "", nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
 
@@ -469,7 +418,7 @@ contract SafeTest is BaseTest {
 
     function testCannot_ApproveTxnHash_CallerNotOwner_Fuzzed(address nonOwner) public {
         vm.assume(nonOwner != users.alice.account && nonOwner != users.bob.account && nonOwner != users.charlie.account);
-        
+
         hoax(nonOwner);
         vm.expectRevert(ISafe.CallerNotOwner.selector);
         userSafe.approveTxnHash(bytes32(0));

@@ -15,5 +15,4 @@ contract TransactionEncoder is BaseTest {
         assertEq(name, "SegMint Safe");
         assertEq(version, "1.0");
     }
-
 }

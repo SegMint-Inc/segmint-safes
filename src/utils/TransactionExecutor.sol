@@ -23,5 +23,4 @@ abstract contract TransactionExecutor {
             (success,) = transaction.to.delegatecall(transaction.data);
         }
     }
-
 }

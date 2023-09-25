@@ -27,7 +27,6 @@ abstract contract Approvals is IApprovals {
      */
     function _approveTxnHash(bytes32 txnHash) internal {
         _approvedTxns[msg.sender][txnHash] = true;
-        emit TxnApproved({ account: msg.sender , txnHash: txnHash });
+        emit TxnApproved({ account: msg.sender, txnHash: txnHash });
     }
-
 }

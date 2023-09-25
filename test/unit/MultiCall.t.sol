@@ -8,7 +8,8 @@ contract MultiCallTest is BaseTest {
 
     function setUp() public override {
         super.setUp();
-        userSafe = createSafe();  /// Creates a safe for `address(this)`.
+        userSafe = createSafe();
+        /// Creates a safe for `address(this)`.
     }
 
     function testCannot_MultiCall_CallerNotSelf() public {
@@ -20,5 +21,4 @@ contract MultiCallTest is BaseTest {
     }
 
     /* Helper Functions */
-
 }

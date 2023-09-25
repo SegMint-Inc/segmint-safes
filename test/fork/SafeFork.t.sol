@@ -16,7 +16,8 @@ contract SafeForkTest is BaseTest {
 
     function setUp() public override {
         super.setUp();
-        userSafe = createSafe();  /// Creates a safe for `address(this)`.
+        userSafe = createSafe();
+        /// Creates a safe for `address(this)`.
     }
 
     function test_ExecuteTransaction_WETHDeposit() public {
@@ -49,7 +50,7 @@ contract SafeForkTest is BaseTest {
     function test_ExecuteTransaction_USDTTransfer() public {
         uint256 depositAmount = 1_000_000e6;
         deal({ token: USDT, to: address(userSafe), give: depositAmount });
-        
+
         assertEq(IERC20(USDT).balanceOf(address(userSafe)), depositAmount);
         assertEq(IERC20(USDT).balanceOf(users.bob.account), 0);
 
@@ -57,13 +58,8 @@ contract SafeForkTest is BaseTest {
         /// Transfer 1m USDT from Safe to Bob.
         bytes memory callData = abi.encodeWithSelector(IERC20.transfer.selector, users.bob.account, depositAmount);
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: USDT,
-            value: 0,
-            data: callData,
-            nonce: userSafe.nonce()
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: USDT, value: 0, data: callData, nonce: userSafe.nonce() });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(txnHash);
@@ -82,7 +78,7 @@ contract SafeForkTest is BaseTest {
     function test_ExecuteTransaction_USDCTransfer() public {
         uint256 depositAmount = 1_000_000e6;
         deal({ token: USDC, to: address(userSafe), give: depositAmount });
-        
+
         assertEq(IERC20(USDC).balanceOf(address(userSafe)), depositAmount);
         assertEq(IERC20(USDC).balanceOf(users.bob.account), 0);
 
@@ -90,13 +86,8 @@ contract SafeForkTest is BaseTest {
         /// Transfer 1m USDC from Safe to Bob.
         bytes memory callData = abi.encodeWithSelector(IERC20.transfer.selector, users.bob.account, depositAmount);
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: USDC,
-            value: 0,
-            data: callData,
-            nonce: userSafe.nonce()
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: USDC, value: 0, data: callData, nonce: userSafe.nonce() });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(txnHash);
@@ -210,7 +201,7 @@ contract SafeForkTest is BaseTest {
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit TransactionFailed({ txnHash: txnHash });
-        userSafe.executeTransaction(txn, signatures);  // Reverts with `ArrayLengthMismatch` selector.
+        userSafe.executeTransaction(txn, signatures); // Reverts with `ArrayLengthMismatch` selector.
     }
 
     function testCannot_ExecuteTransaction_MultiCall_CallFailed() public {
@@ -252,7 +243,7 @@ contract SafeForkTest is BaseTest {
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit TransactionFailed({ txnHash: txnHash });
-        userSafe.executeTransaction(txn, signatures);  // Reverts with `CallFailed` selector.
+        userSafe.executeTransaction(txn, signatures); // Reverts with `CallFailed` selector.
 
         /// Clear the mocked revert.
         vm.clearMockedCalls();
@@ -283,5 +274,4 @@ contract SafeForkTest is BaseTest {
         emit TxnApproved({ account: users.charlie.account, txnHash: txnHash });
         userSafe.approveTxnHash(txnHash);
     }
-
 }

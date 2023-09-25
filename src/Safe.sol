@@ -34,7 +34,7 @@ contract Safe is
     /// Transaction nonce.
     uint256 public nonce;
 
-    modifier onlyOwners {
+    modifier onlyOwners() {
         _onlyOwners();
         _;
     }
@@ -120,5 +120,4 @@ contract Safe is
         /// Checks: Ensure `msg.sender` is a known owner.
         if (!_isOwner(msg.sender)) revert CallerNotOwner();
     }
-
 }

@@ -4,7 +4,6 @@ pragma solidity 0.8.19;
 import "../BaseTest.sol";
 
 contract SafeFactoryTest is BaseTest {
-
     function setUp() public override {
         super.setUp();
     }
@@ -66,7 +65,11 @@ contract SafeFactoryTest is BaseTest {
 
         hoax(users.admin.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: true, checkData: true });
-        emit UpgradeProposed({ admin: users.admin.account, implementation: address(mockUpgrade), deadline: expectedDeadline });
+        emit UpgradeProposed({
+            admin: users.admin.account,
+            implementation: address(mockUpgrade),
+            deadline: expectedDeadline
+        });
         safeFactory.proposeUpgrade({ newImplementation: address(mockUpgrade) });
 
         (address newImplementation, uint40 deadline) = safeFactory.upgradeProposal();
@@ -168,5 +171,4 @@ contract SafeFactoryTest is BaseTest {
         vm.expectRevert(IUpgradeHandler.UpgradeTimeLocked.selector);
         safeFactory.executeUpgrade("");
     }
-
 }

@@ -24,7 +24,6 @@ import { Errors } from "./utils/Errors.sol";
 import { User, Users } from "./utils/Users.sol";
 
 contract BaseTest is Base, Events, Errors {
-
     Users public users;
 
     MockERC20 public mockERC20;
@@ -86,10 +85,10 @@ contract BaseTest is Base, Events, Errors {
     function createSafe() internal returns (Safe) {
         address[] memory owners = getDefaultOwners();
         safeFactory.createSafe({ owners: owners, quorum: owners.length });
-        
+
         address[] memory userSafes = safeFactory.getSafes(address(this));
         Safe userSafe = Safe(payable(userSafes[0]));
-        
+
         vm.label({ account: address(userSafe), newLabel: "Safe" });
 
         return userSafe;
@@ -123,7 +122,7 @@ contract BaseTest is Base, Events, Errors {
         owners[1] = users.bob.account;
         owners[2] = users.charlie.account;
     }
-    
+
     /// Helper function to approve a transaction hash with all Safe owners.
     function approveWithOwners(Safe userSafe, bytes32 txnHash) internal {
         hoax(users.alice.account);
@@ -155,5 +154,4 @@ contract BaseTest is Base, Events, Errors {
     {
         return this.onERC1155BatchReceived.selector;
     }
-
 }

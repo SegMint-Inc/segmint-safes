@@ -14,7 +14,7 @@ abstract contract Events {
 
     /// {NativeTokenReceiver} Events.
     event NativeTokenReceived(address sender, uint256 amount);
-    
+
     /// {IApprovals} Events.
     event TxnApproved(address indexed account, bytes32 txnHash);
 
@@ -27,5 +27,4 @@ abstract contract Events {
     event OwnerRemoved(address account);
     event OwnerSwapped(address oldOwner, address newOwner);
     event QuorumChanged(uint256 oldQuorum, uint256 newQuorum);
-
 }

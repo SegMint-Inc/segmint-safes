@@ -6,7 +6,6 @@ pragma solidity 0.8.19;
  * @notice Allows the receival of ERC721 and ERC1155 tokens.
  */
 abstract contract StandardTokenReceiver {
-
     /**
      * Handles {ERC721.safeTransferFrom} callback.
      */
@@ -31,5 +30,4 @@ abstract contract StandardTokenReceiver {
     {
         return this.onERC1155BatchReceived.selector;
     }
-
 }

@@ -8,7 +8,8 @@ contract NativeTokenReceiverTest is BaseTest {
 
     function setUp() public override {
         super.setUp();
-        userSafe = createSafe();  /// Creates a safe for `address(this)`.
+        userSafe = createSafe();
+        /// Creates a safe for `address(this)`.
     }
 
     /// @dev Whilst `Eve` is our assigned malicious user, we will use her
@@ -17,19 +18,10 @@ contract NativeTokenReceiverTest is BaseTest {
     function test_AddOwner_NoQuorumChange() public {
         uint256 initQuorum = userSafe.getQuorum();
 
-        bytes memory callData = abi.encodeWithSelector(
-            IOwnerManager.addOwner.selector,
-            users.eve.account,
-            initQuorum
-        );
+        bytes memory callData = abi.encodeWithSelector(IOwnerManager.addOwner.selector, users.eve.account, initQuorum);
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -51,19 +43,10 @@ contract NativeTokenReceiverTest is BaseTest {
     function test_AddOwner_QuorumChange() public {
         uint256 newQuorum = userSafe.getQuorum() + 1;
 
-        bytes memory callData = abi.encodeWithSelector(
-            IOwnerManager.addOwner.selector,
-            users.eve.account,
-            newQuorum
-        );
+        bytes memory callData = abi.encodeWithSelector(IOwnerManager.addOwner.selector, users.eve.account, newQuorum);
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -96,19 +79,11 @@ contract NativeTokenReceiverTest is BaseTest {
     }
 
     function testCannot_AddOwner_InvalidOwner_ZeroAddress() public {
-        bytes memory callData = abi.encodeWithSelector(
-            IOwnerManager.addOwner.selector,
-            address(0),
-            userSafe.getQuorum()
-        );
+        bytes memory callData =
+            abi.encodeWithSelector(IOwnerManager.addOwner.selector, address(0), userSafe.getQuorum());
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -126,13 +101,8 @@ contract NativeTokenReceiverTest is BaseTest {
             userSafe.getQuorum()
         );
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -150,13 +120,8 @@ contract NativeTokenReceiverTest is BaseTest {
             userSafe.getQuorum()
         );
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -174,13 +139,8 @@ contract NativeTokenReceiverTest is BaseTest {
             userSafe.getQuorum()
         );
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -190,7 +150,7 @@ contract NativeTokenReceiverTest is BaseTest {
         emit TransactionFailed({ txnHash: txnHash });
         userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
     }
-    
+
     /// @dev Owners are ordered [alice, bob, charlie].
     function test_RemoveOwner_QuorumUpdate() public {
         uint256 newQuorum = userSafe.getQuorum() - 1;
@@ -203,13 +163,8 @@ contract NativeTokenReceiverTest is BaseTest {
             newQuorum
         );
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -249,13 +204,8 @@ contract NativeTokenReceiverTest is BaseTest {
             userSafe.getQuorum()
         );
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -263,7 +213,8 @@ contract NativeTokenReceiverTest is BaseTest {
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit TransactionFailed({ txnHash: txnHash });
-        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash)); /// Reverts with RemovalBreaksQuorum selector.
+        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
+        /// Reverts with RemovalBreaksQuorum selector.
     }
 
     function testCannot_RemoveOwner_InvalidOwner_ZeroAddress() public {
@@ -274,13 +225,8 @@ contract NativeTokenReceiverTest is BaseTest {
             userSafe.getQuorum() - 1
         );
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -288,7 +234,8 @@ contract NativeTokenReceiverTest is BaseTest {
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit TransactionFailed({ txnHash: txnHash });
-        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash)); /// Reverts with InvalidOwner selector.
+        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
+        /// Reverts with InvalidOwner selector.
     }
 
     function testCannot_RemoveOwner_InvalidOwner_Sentinel() public {
@@ -299,13 +246,8 @@ contract NativeTokenReceiverTest is BaseTest {
             userSafe.getQuorum() - 1
         );
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -313,7 +255,8 @@ contract NativeTokenReceiverTest is BaseTest {
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit TransactionFailed({ txnHash: txnHash });
-        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash)); /// Reverts with InvalidOwner selector.
+        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
+        /// Reverts with InvalidOwner selector.
     }
 
     function testCannot_RemoveOwner_InvalidPointer() public {
@@ -324,13 +267,8 @@ contract NativeTokenReceiverTest is BaseTest {
             userSafe.getQuorum() - 1
         );
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -338,32 +276,29 @@ contract NativeTokenReceiverTest is BaseTest {
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit TransactionFailed({ txnHash: txnHash });
-        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash)); /// Reverts with InvalidPointer selector.
+        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
+        /// Reverts with InvalidPointer selector.
     }
 
     function test_SwapOwner() public {
         bytes memory callData = abi.encodeWithSelector(
             IOwnerManager.swapOwner.selector,
             users.alice.account,
-            users.bob.account,  // swap Bob with Eve,
+            users.bob.account, // swap Bob with Eve,
             users.eve.account
         );
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: false, checkData: true });
-        emit OwnerSwapped({ oldOwner: users.bob.account, newOwner: users.eve.account});
-        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash)); /// Reverts with InvalidPointer selector.
+        emit OwnerSwapped({ oldOwner: users.bob.account, newOwner: users.eve.account });
+        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
+        /// Reverts with InvalidPointer selector.
 
         assertFalse(userSafe.isOwner(users.bob.account));
         assertTrue(userSafe.isOwner(users.eve.account));
@@ -373,17 +308,12 @@ contract NativeTokenReceiverTest is BaseTest {
         bytes memory callData = abi.encodeWithSelector(
             IOwnerManager.swapOwner.selector,
             users.alice.account,
-            users.bob.account,  // swap Bob with Eve,
+            users.bob.account, // swap Bob with Eve,
             address(0)
         );
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -391,24 +321,20 @@ contract NativeTokenReceiverTest is BaseTest {
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit TransactionFailed({ txnHash: txnHash });
-        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash)); /// Reverts with InvalidOwner selector.
+        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
+        /// Reverts with InvalidOwner selector.
     }
 
     function testCannot_SwapOwner_InvalidOwner_Sentinel() public {
         bytes memory callData = abi.encodeWithSelector(
             IOwnerManager.swapOwner.selector,
             users.alice.account,
-            users.bob.account,  // swap Bob with Eve,
+            users.bob.account, // swap Bob with Eve,
             address(0x01)
         );
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -416,24 +342,20 @@ contract NativeTokenReceiverTest is BaseTest {
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit TransactionFailed({ txnHash: txnHash });
-        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash)); /// Reverts with InvalidOwner selector.
+        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
+        /// Reverts with InvalidOwner selector.
     }
 
     function testCannot_SwapOwner_InvalidOwner_Self() public {
         bytes memory callData = abi.encodeWithSelector(
             IOwnerManager.swapOwner.selector,
             users.alice.account,
-            users.bob.account,  // swap Bob with Eve,
+            users.bob.account, // swap Bob with Eve,
             address(userSafe)
         );
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -441,24 +363,17 @@ contract NativeTokenReceiverTest is BaseTest {
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit TransactionFailed({ txnHash: txnHash });
-        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash)); /// Reverts with InvalidOwner selector.
+        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
+        /// Reverts with InvalidOwner selector.
     }
 
     function testCannot_SwapOwner_DuplicateOwner() public {
         bytes memory callData = abi.encodeWithSelector(
-            IOwnerManager.swapOwner.selector,
-            users.alice.account,
-            users.bob.account,
-            users.charlie.account
+            IOwnerManager.swapOwner.selector, users.alice.account, users.bob.account, users.charlie.account
         );
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -466,24 +381,16 @@ contract NativeTokenReceiverTest is BaseTest {
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit TransactionFailed({ txnHash: txnHash });
-        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash)); /// Reverts with DuplicateOwner selector.
+        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
+        /// Reverts with DuplicateOwner selector.
     }
 
     function testCannot_SwapOwner_InvalidOwner_OldOwner_ZeroAddress() public {
-        bytes memory callData = abi.encodeWithSelector(
-            IOwnerManager.swapOwner.selector,
-            users.alice.account,
-            address(0),
-            users.eve.account
-        );
+        bytes memory callData =
+            abi.encodeWithSelector(IOwnerManager.swapOwner.selector, users.alice.account, address(0), users.eve.account);
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -491,24 +398,17 @@ contract NativeTokenReceiverTest is BaseTest {
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit TransactionFailed({ txnHash: txnHash });
-        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash)); /// Reverts with InvalidOwner selector.
+        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
+        /// Reverts with InvalidOwner selector.
     }
 
     function testCannot_SwapOwner_InvalidOwner_OldOwner_Sentinel() public {
         bytes memory callData = abi.encodeWithSelector(
-            IOwnerManager.swapOwner.selector,
-            users.alice.account,
-            address(0x01),
-            users.eve.account
+            IOwnerManager.swapOwner.selector, users.alice.account, address(0x01), users.eve.account
         );
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -516,7 +416,8 @@ contract NativeTokenReceiverTest is BaseTest {
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit TransactionFailed({ txnHash: txnHash });
-        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash)); /// Reverts with InvalidOwner selector.
+        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
+        /// Reverts with InvalidOwner selector.
     }
 
     function testCannot_SwapOwner_PointerMismatch() public {
@@ -527,13 +428,8 @@ contract NativeTokenReceiverTest is BaseTest {
             users.eve.account
         );
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -541,25 +437,18 @@ contract NativeTokenReceiverTest is BaseTest {
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit TransactionFailed({ txnHash: txnHash });
-        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash)); /// Reverts with InvalidOwner selector.
+        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
+        /// Reverts with InvalidOwner selector.
     }
 
     function test_ChangeQuorum() public {
         uint256 oldQuorum = userSafe.getQuorum();
         uint256 newQuorum = 2;
 
-        bytes memory callData = abi.encodeWithSelector(
-            IOwnerManager.changeQuorum.selector,
-            newQuorum
-        );
+        bytes memory callData = abi.encodeWithSelector(IOwnerManager.changeQuorum.selector, newQuorum);
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -567,7 +456,8 @@ contract NativeTokenReceiverTest is BaseTest {
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: false, checkData: true });
         emit QuorumChanged({ oldQuorum: oldQuorum, newQuorum: newQuorum });
-        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash)); /// Reverts with InvalidOwner selector.
+        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
+        /// Reverts with InvalidOwner selector.
 
         assertEq(userSafe.getQuorum(), newQuorum);
     }
@@ -581,18 +471,10 @@ contract NativeTokenReceiverTest is BaseTest {
     }
 
     function testCannot_ChangeQuorum_InvalidQuorum_UnderMin() public {
-        bytes memory callData = abi.encodeWithSelector(
-            IOwnerManager.changeQuorum.selector,
-            0
-        );
+        bytes memory callData = abi.encodeWithSelector(IOwnerManager.changeQuorum.selector, 0);
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -600,23 +482,16 @@ contract NativeTokenReceiverTest is BaseTest {
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit TransactionFailed({ txnHash: txnHash });
-        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash)); /// Reverts with InvalidOwner selector.
+        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
+        /// Reverts with InvalidOwner selector.
     }
 
     function testCannot_ChangeQuorum_InvalidQuorum_OverMax() public {
         uint256 badQuorum = userSafe.ownerCount() + 1;
-        bytes memory callData = abi.encodeWithSelector(
-            IOwnerManager.changeQuorum.selector,
-            badQuorum
-        );
+        bytes memory callData = abi.encodeWithSelector(IOwnerManager.changeQuorum.selector, badQuorum);
 
-        Transaction memory txn = Transaction({
-            operation: Operation.CALL,
-            to: address(userSafe),
-            value: 0,
-            data: callData,
-            nonce: 0
-        });
+        Transaction memory txn =
+            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -624,7 +499,7 @@ contract NativeTokenReceiverTest is BaseTest {
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit TransactionFailed({ txnHash: txnHash });
-        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash)); /// Reverts with InvalidOwner selector.
+        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
+        /// Reverts with InvalidOwner selector.
     }
-
 }

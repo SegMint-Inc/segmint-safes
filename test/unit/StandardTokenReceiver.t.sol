@@ -8,7 +8,8 @@ contract StandardTokenReceiverTest is BaseTest {
 
     function setUp() public override {
         super.setUp();
-        userSafe = createSafe();  /// Creates a safe for `address(this)`.
+        userSafe = createSafe();
+        /// Creates a safe for `address(this)`.
     }
 
     function test_OnERC721Received_Fuzzed(uint256 tokenId) public {
@@ -44,5 +45,4 @@ contract StandardTokenReceiverTest is BaseTest {
         assertEq(mockERC1155.balanceOf(address(userSafe), tokenIds[0]), amount0);
         assertEq(mockERC1155.balanceOf(address(userSafe), tokenIds[1]), amount1);
     }
-
 }

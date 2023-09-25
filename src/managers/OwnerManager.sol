@@ -74,7 +74,7 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
         _owners[_SENTINEL_VALUE] = newOwner;
 
         _ownerCount++;
-        
+
         /// Emit event after owner address has been set in storage and count has been updated.
         emit OwnerAdded({ account: newOwner });
 
