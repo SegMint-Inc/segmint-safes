@@ -9,6 +9,7 @@ import { ISafeFactory } from "../src/interfaces/ISafeFactory.sol";
 import { IOwnerManager } from "../src/interfaces/IOwnerManager.sol";
 import { IUpgradeHandler } from "../src/interfaces/IUpgradeHandler.sol";
 
+import { MultiCall } from "../src/handlers/MultiCall.sol";
 import { SelfAuthorized } from "../src/utils/SelfAuthorized.sol";
 import { Operation, Transaction } from "../src/types/DataTypes.sol";
 
