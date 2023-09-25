@@ -3,7 +3,7 @@ pragma solidity 0.8.19;
 
 /**
  * @title IOwnerManager
-  * @notice Interface for {OwnerManager}.
+ * @notice Interface for {OwnerManager}.
  */
 interface IOwnerManager {
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/

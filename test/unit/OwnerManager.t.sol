@@ -102,7 +102,7 @@ contract OwnerManagerTest is BaseTest {
 
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit TransactionFailed({ txnHash: txnHash });
-        
+
         hoax(users.alice.account);
         userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
     }
