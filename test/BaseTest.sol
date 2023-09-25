@@ -123,6 +123,24 @@ contract BaseTest is Base, Events, Errors {
         owners[1] = users.bob.account;
         owners[2] = users.charlie.account;
     }
+    
+    /// Helper function to approve a transaction hash with all Safe owners.
+    function approveWithOwners(Safe userSafe, bytes32 txnHash) internal {
+        hoax(users.alice.account);
+        vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: false, checkData: true });
+        emit TxnApproved({ account: users.alice.account, txnHash: txnHash });
+        userSafe.approveTxnHash(txnHash);
+
+        hoax(users.bob.account);
+        vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: false, checkData: true });
+        emit TxnApproved({ account: users.bob.account, txnHash: txnHash });
+        userSafe.approveTxnHash(txnHash);
+
+        hoax(users.charlie.account);
+        vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: false, checkData: true });
+        emit TxnApproved({ account: users.charlie.account, txnHash: txnHash });
+        userSafe.approveTxnHash(txnHash);
+    }
 
     /// Token Handlers
 

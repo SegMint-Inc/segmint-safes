@@ -139,21 +139,7 @@ contract SafeTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-
-        hoax(users.alice.account);
-        vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: false, checkData: true });
-        emit TxnApproved({ account: users.alice.account, txnHash: txnHash });
-        userSafe.approveTxnHash(txnHash);
-
-        hoax(users.bob.account);
-        vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: false, checkData: true });
-        emit TxnApproved({ account: users.bob.account, txnHash: txnHash });
-        userSafe.approveTxnHash(txnHash);
-
-        hoax(users.charlie.account);
-        vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: false, checkData: true });
-        emit TxnApproved({ account: users.charlie.account, txnHash: txnHash });
-        userSafe.approveTxnHash(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         /// Signatures must be provided in ascending order.
         bytes[] memory signatures = getOrderedSignatures(txnHash);
@@ -182,7 +168,7 @@ contract SafeTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         startHoax(users.alice.account);
         userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
@@ -218,7 +204,7 @@ contract SafeTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         startHoax(users.alice.account);
         userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
@@ -239,7 +225,7 @@ contract SafeTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         startHoax(users.alice.account);
         userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
@@ -264,7 +250,7 @@ contract SafeTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         startHoax(users.alice.account);
         userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
@@ -302,7 +288,7 @@ contract SafeTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         startHoax(users.alice.account);
         userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
@@ -331,7 +317,7 @@ contract SafeTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
@@ -357,7 +343,7 @@ contract SafeTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
@@ -376,7 +362,7 @@ contract SafeTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         vm.expectRevert(ISafe.CallerNotOwner.selector);
         userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
@@ -384,7 +370,13 @@ contract SafeTest is BaseTest {
 
     function testCannot_ExecuteTransaction_QuorumNotReached() public {
         bytes[] memory signatures = new bytes[](1);
-        Transaction memory txn = getGenericTransaction();
+        Transaction memory txn = Transaction({
+            operation: Operation.CALL,
+            to: users.alice.account,
+            value: 0 ether,
+            data: "",
+            nonce: 0
+        });
 
         hoax(users.alice.account);
         vm.expectRevert(ISafe.QuorumNotReached.selector);
@@ -410,9 +402,16 @@ contract SafeTest is BaseTest {
     }
 
     function testCannot_ExecuteTransaction_SignerNotOwner() public {
-        Transaction memory txn = getGenericTransaction();
+        Transaction memory txn = Transaction({
+            operation: Operation.CALL,
+            to: users.alice.account,
+            value: 0 ether,
+            data: "",
+            nonce: 0
+        });
+
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         /// Replace Charlie's valid signature with Eve's.
         bytes[] memory signatures = getOrderedSignatures(txnHash);
@@ -424,9 +423,16 @@ contract SafeTest is BaseTest {
     }
 
     function testCannot_ExecuteTransaction_InvalidSignatureOrder() public {
-        Transaction memory txn = getGenericTransaction();
+        Transaction memory txn = Transaction({
+            operation: Operation.CALL,
+            to: users.alice.account,
+            value: 0 ether,
+            data: "",
+            nonce: 0
+        });
+
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectRevert(ISafe.InvalidSignatureOrder.selector);
@@ -434,7 +440,14 @@ contract SafeTest is BaseTest {
     }
 
     function testCannot_ExecuteTransaction_SignerHasNotApproved() public {
-        Transaction memory txn = getGenericTransaction();
+        Transaction memory txn = Transaction({
+            operation: Operation.CALL,
+            to: users.alice.account,
+            value: 0 ether,
+            data: "",
+            nonce: 0
+        });
+
         bytes32 txnHash = userSafe.encodeTransaction(txn);
 
         hoax(users.alice.account);
@@ -461,30 +474,4 @@ contract SafeTest is BaseTest {
         vm.expectRevert(ISafe.CallerNotOwner.selector);
         userSafe.approveTxnHash(bytes32(0));
     }
-
-    /* Helper Functions */
-
-    /// @dev Helper function to approve a transaction hash with all Safe owners.
-    function approveWithOwners(bytes32 txnHash) internal {
-        hoax(users.alice.account);
-        userSafe.approveTxnHash(txnHash);
-
-        hoax(users.bob.account);
-        userSafe.approveTxnHash(txnHash);
-
-        hoax(users.charlie.account);
-        userSafe.approveTxnHash(txnHash);
-    }
-
-    /// @dev Returns a generic transaction when testing reverts.
-    function getGenericTransaction() internal view returns (Transaction memory) {
-        return Transaction({
-            operation: Operation.CALL,
-            to: users.alice.account,
-            value: 0 ether,
-            data: "",
-            nonce: 0
-        });
-    }
-
 }

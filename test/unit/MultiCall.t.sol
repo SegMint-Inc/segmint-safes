@@ -11,10 +11,6 @@ contract MultiCallTest is BaseTest {
         userSafe = createSafe();  /// Creates a safe for `address(this)`.
     }
 
-    function test_ExecuteTransaction_AddMultipleOwners() public {
-
-    }
-
     function testCannot_MultiCall_CallerNotSelf() public {
         address[] memory targets = new address[](1);
         bytes[] memory payloads = new bytes[](1);
@@ -24,23 +20,5 @@ contract MultiCallTest is BaseTest {
     }
 
     /* Helper Functions */
-
-    /// @dev Helper function to approve a transaction hash with all Safe owners.
-    function approveWithOwners(bytes32 txnHash) internal {
-        hoax(users.alice.account);
-        vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: false, checkData: true });
-        emit TxnApproved({ account: users.alice.account, txnHash: txnHash });
-        userSafe.approveTxnHash(txnHash);
-
-        hoax(users.bob.account);
-        vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: false, checkData: true });
-        emit TxnApproved({ account: users.bob.account, txnHash: txnHash });
-        userSafe.approveTxnHash(txnHash);
-
-        hoax(users.charlie.account);
-        vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: false, checkData: true });
-        emit TxnApproved({ account: users.charlie.account, txnHash: txnHash });
-        userSafe.approveTxnHash(txnHash);
-    }
 
 }

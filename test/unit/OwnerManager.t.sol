@@ -32,7 +32,7 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
@@ -66,7 +66,7 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
 
@@ -111,7 +111,7 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
@@ -135,7 +135,7 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
@@ -159,7 +159,7 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
@@ -183,7 +183,7 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
@@ -212,7 +212,7 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
@@ -258,7 +258,7 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
@@ -283,7 +283,7 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
@@ -308,7 +308,7 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
@@ -333,7 +333,7 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
@@ -358,7 +358,7 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: false, checkData: true });
@@ -386,7 +386,7 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
@@ -411,7 +411,7 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
@@ -436,7 +436,7 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
@@ -461,7 +461,7 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
@@ -486,7 +486,7 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
@@ -511,7 +511,7 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
@@ -536,7 +536,7 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
@@ -562,7 +562,7 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: true, checkTopic3: false, checkData: true });
@@ -595,7 +595,7 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
@@ -619,26 +619,12 @@ contract NativeTokenReceiverTest is BaseTest {
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
-        approveWithOwners(txnHash);
+        approveWithOwners(userSafe, txnHash);
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit TransactionFailed({ txnHash: txnHash });
         userSafe.executeTransaction(txn, getOrderedSignatures(txnHash)); /// Reverts with InvalidOwner selector.
-    }
-
-    /* Helper Functions */
-
-    /// @dev Helper function to approve a transaction hash with all Safe owners.
-    function approveWithOwners(bytes32 txnHash) internal {
-        hoax(users.alice.account);
-        userSafe.approveTxnHash(txnHash);
-
-        hoax(users.bob.account);
-        userSafe.approveTxnHash(txnHash);
-
-        hoax(users.charlie.account);
-        userSafe.approveTxnHash(txnHash);
     }
 
 }
