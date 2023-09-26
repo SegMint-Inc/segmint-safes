@@ -94,13 +94,14 @@ contract Safe is
      * the recovered signers are unique.
      */
     function _validateSignatures(bytes32 txnHash, bytes[] calldata signatures) internal view {
-        address lastSigner = address(0);
-
+        address lastSigner;
         for (uint256 i = 0; i < signatures.length; i++) {
             /// Cache the signature.
             bytes calldata signature = signatures[i];
 
-            /// Recover the signer. By default, EIP-2908 signatures are not supported.
+            /// Recover the signer.
+            /// @dev It should be noted that Solady's {ECDSA.recover} does not allow for failed recovery resulting
+            /// in the zero address. Short form signatures (EIP-2098) signatures are also not deemed as valid.
             address recoveredSigner = txnHash.recover(signature);
 
             /// Checks: Ensure the recovered signer is an owner.
