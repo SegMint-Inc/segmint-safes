@@ -15,6 +15,8 @@ abstract contract Base is Script, Test {
         FORK
     }
 
+    Deployment public deployment;
+
     /// Core contracts.
     ERC1967Proxy public safeFactoryProxy;
     SafeFactory public safeFactory;

@@ -1,15 +1,20 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity 0.8.19;
 
+struct User {
+    address payable account;
+    uint256 privateKey;
+}
+
 struct Users {
     /// Default administrator.
-    address payable admin;
+    User admin;
     /// Signator #1
-    address payable alice;
+    User alice;
     /// Signator #2
-    address payable bob;
+    User bob;
     /// Signator #3
-    address payable charlie;
+    User charlie;
     /// Malicious user.
-    address payable eve;
+    User eve;
 }

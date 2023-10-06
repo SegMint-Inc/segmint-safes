@@ -3,7 +3,7 @@ pragma solidity 0.8.19;
 
 /**
  * @title IUpgradeHandler
- * @notice Interface that encapsulates the implementation details of {UpgradeHandler}.
+ * @notice Interface for {UpgradeHandler}.
  */
 
 interface IUpgradeHandler {
@@ -39,6 +39,10 @@ interface IUpgradeHandler {
         address newImplementation;
         uint40 deadline;
     }
+
+    /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
+    /*                           EVENTS                           */
+    /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
     /**
      * Emitted when a new implementation address for {SegMintVaultManager} has been proposed.
