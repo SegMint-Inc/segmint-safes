@@ -1,10 +1,10 @@
 # SegMint Safes
 
-Safes offer versatility and can accommodate both short-term and long-term storage. Using Safes, users can store any EVM-compatible assets. They have the flexibility to add multiple signatories, remove signatories, and establish threshold requirements for approving transaction proposals. In essence, Safes can be likened to real-life safety deposit boxes, where the keys required to open the safe are equivalent to the proposed signatories authorized to approve transactions.
+Safes offer versatility and can accommodate both short-term and long-term storage. Using Safes, users can store EVM-compatible assets such as ERC20, ERC721, ERC1155 and chain-native tokens. They have the flexibility to add, remove and swap multiple signatories and establish threshold requirements for approving transaction proposals. In essence, Safes can be likened to real-life safety deposit boxes, where the keys required to open the safe are equivalent to the proposed signatories authorized to approve transactions.
 
 ## Protocol Upgradability
 
-All contracts within the Safe ecosystem are immutable besides the `SafeFactory.sol` smart contract which allows an adiministrator to propose an upgrade. Upgrades to the implementation can then be executed assuming the hardcoded timelock of 5 days has lapsed. This contract has been defined as upgradable so that future versions of Safes may be added at a later point in time.
+All contracts within the Safe ecosystem are immutable besides the `SafeFactory.sol` smart contract which allows an administrator to propose an upgrade. Upgrades to the implementation can then be executed assuming the hardcoded timelock of 5 days has lapsed. This contract has been defined as upgradable so that future versions of Safes may be added at a later point in time.
 
 ## Factories
 
@@ -26,9 +26,9 @@ The `MultiCall.sol` contract allows Safe owners to batch nonpayable actions into
 
 ### Owner Manager
 
-The `OwnerManager.sol` contract is responsible for managing the users associated with a vault and forks [Gnosis Safe's Owner Mangager](https://github.com/safe-global/safe-contracts/blob/main/contracts/base/OwnerManager.sol) but uses custom errors instead for consistency within the codebase.
+The `OwnerManager.sol` contract is responsible for managing the users associated with a vault and forks [Gnosis Safe's Owner Mangager](https://github.com/safe-global/safe-contracts/blob/main/contracts/base/OwnerManager.sol) but uses custom errors instead require statements for consistency within the surrounding codebase.
 
-All exposed non-view functions within this contract should only be callable through a Safe transaction, meaning that a proposal must pass before these functions can be called. Safe owners are able to add, remove, and swap owners, but also propose a change to the current quorum value that is required to achieve execution.
+All exposed non-view functions within this contract should only be callable through a Safe transaction, meaning that a proposal must pass before these functions can be called. Safe owners are able to add, remove, and swap owners, but also propose a change to the current quorum value that is required to achieve transaction execution.
 
 ## Utils
 
