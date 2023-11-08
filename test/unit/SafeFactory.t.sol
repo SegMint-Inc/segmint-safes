@@ -184,4 +184,14 @@ contract SafeFactoryTest is BaseTest {
         vm.expectRevert(IUpgradeHandler.UpgradeTimeLocked.selector);
         safeFactory.executeUpgrade("");
     }
+
+    function testCannot_UpgradeTo_UUPSUpgradeable() public {
+        vm.expectRevert(IUpgradeHandler.UpgradeMethodBlocked.selector);
+        safeFactory.upgradeTo({ newImplementation: address(0) });
+    }
+
+    function testCannot_UpgradeToAndCall_UUPSUpgradeable() public {
+        vm.expectRevert(IUpgradeHandler.UpgradeMethodBlocked.selector);
+        safeFactory.upgradeToAndCall({ newImplementation: address(0), data: "" });
+    }
 }
