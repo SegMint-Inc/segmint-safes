@@ -20,21 +20,34 @@ contract SafeFactoryTest is BaseTest {
         assertEq(version, "1.0");
     }
 
-    function test_Initialize_Fuzzed(address randomAdmin, address randomSafe) public {
-        /// Create dummy instance of {SafeFactory} to test initialize.
-        SafeFactory factory = new SafeFactory();
-        factory.initialize({ _admin: randomAdmin, _safe: randomSafe });
+    /// Since `Base.sol` initializes the implementation on setup, we do a clean deploy within this test.
+    function test_Initialize_Fuzzed(address randomAdmin, address randomImplementation) public {
+        vm.assume(randomAdmin != address(0) && randomImplementation != address(0));
+        SafeFactory testFactory = new SafeFactory();
 
+        bytes4 funcSelector = SafeFactory.initialize.selector;
+        bytes memory payload = abi.encodeWithSelector(funcSelector, randomAdmin, randomImplementation);
+        SafeFactory factory = SafeFactory(address(new ERC1967Proxy({ _logic: address(testFactory), _data: payload })));
+
+        assertTrue(factory.hasAllRoles(randomAdmin, factory.ADMIN_ROLE()));
         assertEq(factory.owner(), address(this));
-        assertEq(factory.safe(), randomSafe);
-
-        uint256 adminRole = factory.ADMIN_ROLE();
-        assertTrue(factory.hasAllRoles(randomAdmin, adminRole));
+        assertEq(factory.safe(), randomImplementation);
     }
 
-    function testCannot_Initialize_AlreadyInitialized() public {
+    function testCannot_Initialize_SafeFactory_Implementation() public {
+        /// @dev Since we cast the original implementation in `Base.sol` to the proxy, we need to
+        /// load the EIP-1967 slot to get the true implementation address.
+        bytes32 implementationSlot = 0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc;
+        bytes32 safeFactoryImplementation = vm.load(address(safeFactory), implementationSlot);
+        address implementation = address(uint160(uint256(safeFactoryImplementation)));
+
         vm.expectRevert("Initializable: contract is already initialized");
-        safeFactory.initialize({ _admin: address(0), _safe: address(0) });
+        SafeFactory(implementation).initialize({ _admin: users.admin.account, _safe: address(safe) });
+    }
+
+    function testCannot_Initialize_ContractIsAlreadyInitialized() public {
+        vm.expectRevert("Initializable: contract is already initialized");
+        safeFactory.initialize({ _admin: address(1), _safe: address(1) });
     }
 
     function test_CreateSafe() public {
