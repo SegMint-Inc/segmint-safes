@@ -24,6 +24,11 @@ contract SafeFactory is ISafeFactory, OwnableRoles, Initializable, UpgradeHandle
 
     mapping(address account => uint256 nonce) private _nonce;
 
+    constructor() {
+        /// Prevent implementation contract from being initialized.
+        _disableInitializers();
+    }
+
     /**
      * @inheritdoc ISafeFactory
      */
@@ -78,21 +83,21 @@ contract SafeFactory is ISafeFactory, OwnableRoles, Initializable, UpgradeHandle
     /**
      * @inheritdoc ISafeFactory
      */
-    function proposeUpgrade(address newImplementation) external onlyRoles(ADMIN_ROLE) {
+    function proposeUpgrade(address newImplementation) external onlyRoles(ADMIN_ROLE) onlyProxy {
         _proposeUpgrade(newImplementation);
     }
 
     /**
      * @inheritdoc ISafeFactory
      */
-    function cancelUpgrade() external onlyRoles(ADMIN_ROLE) {
+    function cancelUpgrade() external onlyRoles(ADMIN_ROLE) onlyProxy {
         _cancelUpgrade();
     }
 
     /**
      * @inheritdoc ISafeFactory
      */
-    function executeUpgrade(bytes memory payload) external onlyRoles(ADMIN_ROLE) {
+    function executeUpgrade(bytes memory payload) external onlyRoles(ADMIN_ROLE) onlyProxy {
         _executeUpgrade(payload);
     }
 

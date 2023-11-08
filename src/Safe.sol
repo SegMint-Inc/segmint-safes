@@ -38,6 +38,11 @@ contract Safe is
     /// Transaction nonce.
     uint256 public nonce;
 
+    constructor() {
+        /// Prevent implementation contract from being initialized.
+        _disableInitializers();
+    }
+
     modifier onlyOwners() {
         _onlyOwners();
         _;
