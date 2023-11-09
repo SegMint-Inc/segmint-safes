@@ -20,7 +20,7 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
     uint256 internal _ownerCount;
 
     /// Proposal quorum value.
-    uint256 internal _quroum;
+    uint256 internal _quorum;
 
     /**
      * Function used to initialize the signers associated with a safe.
@@ -57,7 +57,7 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
 
         _owners[currentOwner] = _SENTINEL_VALUE;
         _ownerCount = owners.length;
-        _quroum = quorum;
+        _quorum = quorum;
     }
 
     /**
@@ -77,7 +77,7 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
         /// Emit event after owner address has been set in storage and count has been updated.
         emit OwnerAdded({ account: newOwner });
 
-        if (_quroum != newQuorum) {
+        if (_quorum != newQuorum) {
             changeQuorum(newQuorum);
         }
     }
@@ -97,7 +97,7 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
         /// Emit event after owner address has been cleared in storage and count has been updated.
         emit OwnerRemoved({ account: oldOwner });
 
-        if (_quroum != newQuorum) {
+        if (_quorum != newQuorum) {
             changeQuorum(newQuorum);
         }
     }
@@ -130,8 +130,8 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
         /// Checks: Ensure the new quorum value is neither 0 or greater than the owner count.
         if (newQuorum == 0 || newQuorum > _ownerCount) revert InvalidQuorum();
 
-        uint256 oldQuorum = _quroum;
-        _quroum = newQuorum;
+        uint256 oldQuorum = _quorum;
+        _quorum = newQuorum;
 
         emit QuorumChanged(oldQuorum, newQuorum);
     }
@@ -176,7 +176,7 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
      * @inheritdoc IOwnerManager
      */
     function getQuorum() public view returns (uint256) {
-        return _quroum;
+        return _quorum;
     }
 
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
