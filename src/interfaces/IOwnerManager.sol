@@ -11,27 +11,27 @@ interface IOwnerManager {
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
     /**
-     * Thrown when trying to add a signer that is deemed as invalid.
+     * Thrown when trying to add a owner that is deemed as invalid.
      */
     error InvalidOwner();
 
     /**
-     * Thrown when attempting to add a signer that already exists.
+     * Thrown when attempting to add a owner that already exists.
      */
     error DuplicateOwner();
 
     /**
-     * Thrown when the newly proposed quorum value exceeds the number of signers.
+     * Thrown when the newly proposed quorum value exceeds the number of owners.
      */
     error RemovalBreaksQuorum();
 
     /**
-     * Thrown when the pointer signer does point to the expected signer.
+     * Thrown when the pointer owner does point to the expected owner.
      */
     error InvalidPointer();
 
     /**
-     * Thrown when the pointer signer does not match the expected signer.
+     * Thrown when the pointer owner does not match the expected owner.
      */
     error PointerMismatch();
 
@@ -85,27 +85,27 @@ interface IOwnerManager {
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/
 
     /**
-     * Function used to add a signer and update the quorum value.
-     * @param newSigner Address of the new signer to be added.
-     * @param quorumValue Number of signer approvals to reach quorum on a proposal.
+     * Function used to add a owner and update the quorum value.
+     * @param newOwner Address of the new owner to be added.
+     * @param quorumValue Number of owner approvals to reach quorum on a proposal.
      */
-    function addOwner(address newSigner, uint256 quorumValue) external;
+    function addOwner(address newOwner, uint256 quorumValue) external;
 
     /**
-     * Function used to remove a signer and update the quorum value.
-     * @param ptrSigner Signer address that points to `signer` in the linked list.
-     * @param signer Address of the signer to be removed.
-     * @param quorumValue Number of signer approvals to reach quorum on a proposal.
+     * Function used to remove a owner and update the quorum value.
+     * @param pointerOwner Signer address that points to `owner` in the linked list.
+     * @param owner Address of the owner to be removed.
+     * @param quorumValue Number of owner approvals to reach quorum on a proposal.
      */
-    function removeOwner(address ptrSigner, address signer, uint256 quorumValue) external;
+    function removeOwner(address pointerOwner, address owner, uint256 quorumValue) external;
 
     /**
-     * Function used to swap `oldSigner` with `newSigner` and update the quorum value.
-     * @param ptrSigner Signer address that points to `signer` in the linked list.
-     * @param oldSigner Address of the old signer to be removed.
-     * @param newSigner Address of the new signer to be added.
+     * Function used to swap `oldOwner` with `newOwner` and update the quorum value.
+     * @param pointerOwner Signer address that points to `owner` in the linked list.
+     * @param oldOwner Address of the old owner to be removed.
+     * @param newOwner Address of the new owner to be added.
      */
-    function swapOwner(address ptrSigner, address oldSigner, address newSigner) external;
+    function swapOwner(address pointerOwner, address oldOwner, address newOwner) external;
 
     /**
      * Function used to update the quorum value.
@@ -114,12 +114,12 @@ interface IOwnerManager {
     function changeQuorum(uint256 quorumValue) external;
 
     /**
-     * Function used to view all the approved signers of a Safe.
+     * Function used to view all the approved owners of a Safe.
      */
     function getOwners() external view returns (address[] memory);
 
     /**
-     * Function used to view if `account` is an approved signer.
+     * Function used to view if `account` is an approved owner.
      */
     function isOwner(address account) external view returns (bool);
 

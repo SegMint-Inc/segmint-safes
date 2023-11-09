@@ -13,18 +13,18 @@ import { SelfAuthorized } from "../utils/SelfAuthorized.sol";
 abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
     address internal constant _SENTINEL_VALUE = address(0x01);
 
-    /// Linked list of approved signers.
+    /// @dev Linked list of approved owners, `ptrOwner` references the address that points to `owner` in the list.
     mapping(address ptrOwner => address owner) internal _owners;
 
-    /// Number of signers associated with the Safe.
+    /// Number of owners associated with the Safe.
     uint256 internal _ownerCount;
 
     /// Proposal quorum value.
     uint256 internal _quorum;
 
     /**
-     * Function used to initialize the signers associated with a safe.
-     * @param owners List of intended signers to initialize the safe with.
+     * Function used to initialize the owners associated with a safe.
+     * @param owners List of intended owners to initialize the safe with.
      * @param quorum Number of approvals required to reach quorum.
      */
     function _initOwners(address[] calldata owners, uint256 quorum) internal {
@@ -85,12 +85,12 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
     /**
      * @inheritdoc IOwnerManager
      */
-    function removeOwner(address prtOwner, address oldOwner, uint256 newQuorum) public selfAuthorized {
+    function removeOwner(address pointerOwner, address oldOwner, uint256 newQuorum) public selfAuthorized {
         if (newQuorum > _ownerCount - 1) revert RemovalBreaksQuorum();
         if (oldOwner == address(0) || oldOwner == _SENTINEL_VALUE) revert InvalidOwner();
-        if (_owners[prtOwner] != oldOwner) revert InvalidPointer();
+        if (_owners[pointerOwner] != oldOwner) revert InvalidPointer();
 
-        _owners[prtOwner] = _owners[oldOwner];
+        _owners[pointerOwner] = _owners[oldOwner];
         _owners[oldOwner] = address(0);
         _ownerCount--;
 
@@ -105,7 +105,7 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
     /**
      * @inheritdoc IOwnerManager
      */
-    function swapOwner(address prtOwner, address oldOwner, address newOwner) public selfAuthorized {
+    function swapOwner(address pointerOwner, address oldOwner, address newOwner) public selfAuthorized {
         // Owner address cannot be null, the sentinel or the Safe itself.
         if (newOwner == address(0) || newOwner == _SENTINEL_VALUE || newOwner == address(this)) revert InvalidOwner();
 
@@ -114,10 +114,10 @@ abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
 
         // Validate oldOwner address and check that it corresponds to owner index.
         if (oldOwner == address(0) || oldOwner == _SENTINEL_VALUE) revert InvalidOwner();
-        if (_owners[prtOwner] != oldOwner) revert PointerMismatch();
+        if (_owners[pointerOwner] != oldOwner) revert PointerMismatch();
 
         _owners[newOwner] = _owners[oldOwner];
-        _owners[prtOwner] = newOwner;
+        _owners[pointerOwner] = newOwner;
         _owners[oldOwner] = address(0);
 
         emit OwnerSwapped(oldOwner, newOwner);
