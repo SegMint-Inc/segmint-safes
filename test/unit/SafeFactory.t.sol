@@ -45,6 +45,24 @@ contract SafeFactoryTest is BaseTest {
         SafeFactory(implementation).initialize({ _admin: users.admin.account, _safe: address(safe) });
     }
 
+    /// Since `Base.sol` initializes the implementation on setup, we do a clean deploy within this test.
+    function testCannot_Initialize_Admin_ZeroAddressInvalid() public {
+        SafeFactory testFactory = new SafeFactory();
+        bytes memory payload = abi.encodeWithSelector(SafeFactory.initialize.selector, address(0), safe);
+
+        vm.expectRevert(ISafeFactory.ZeroAddressInvalid.selector);
+        SafeFactory(address(new ERC1967Proxy({ _logic: address(testFactory), _data: payload })));
+    }
+
+    /// Since `Base.sol` initializes the implementation on setup, we do a clean deploy within this test.
+    function testCannot_Initialize_Safe_ZeroAddressInvalid() public {
+        SafeFactory testFactory = new SafeFactory();
+        bytes memory payload = abi.encodeWithSelector(SafeFactory.initialize.selector, users.admin.account, address(0));
+
+        vm.expectRevert(ISafeFactory.ZeroAddressInvalid.selector);
+        SafeFactory(address(new ERC1967Proxy({ _logic: address(testFactory), _data: payload })));
+    }
+
     function testCannot_Initialize_ContractIsAlreadyInitialized() public {
         vm.expectRevert("Initializable: contract is already initialized");
         safeFactory.initialize({ _admin: address(1), _safe: address(1) });
@@ -96,6 +114,12 @@ contract SafeFactoryTest is BaseTest {
         hoax(nonAdmin);
         vm.expectRevert(Unauthorized.selector);
         safeFactory.proposeUpgrade(address(0));
+    }
+
+    function testCannot_ProposeUpgrade_ZeroAddressInvalid() public {
+        hoax(users.admin.account);
+        vm.expectRevert(ISafeFactory.ZeroAddressInvalid.selector);
+        safeFactory.proposeUpgrade({ newImplementation: address(0) });
     }
 
     function testCannot_ProposeUpgrade_ProposalInProgress() public {
