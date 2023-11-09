@@ -205,7 +205,7 @@ contract OwnerManagerTest is BaseTest {
 
         hoax(notSafe);
         vm.expectRevert(SelfAuthorized.CallerNotSelf.selector);
-        userSafe.removeOwner({ prtOwner: users.alice.account, oldOwner: users.bob.account, newQuorum: 2 });
+        userSafe.removeOwner({ pointerOwner: users.alice.account, oldOwner: users.bob.account, newQuorum: 2 });
     }
 
     function testCannot_RemoveOwner_RemovalBreaksQuorum() public {
