@@ -33,6 +33,8 @@ contract SafeFactory is ISafeFactory, OwnableRoles, Initializable, UpgradeHandle
      * @inheritdoc ISafeFactory
      */
     function initialize(address _admin, address _safe) external initializer {
+        if (_admin == address(0) || _safe == address(0)) revert ZeroAddressInvalid();
+
         _initializeOwner(msg.sender);
         _grantRoles(_admin, ADMIN_ROLE);
         safe = _safe;
@@ -84,6 +86,7 @@ contract SafeFactory is ISafeFactory, OwnableRoles, Initializable, UpgradeHandle
      * @inheritdoc ISafeFactory
      */
     function proposeUpgrade(address newImplementation) external onlyRoles(ADMIN_ROLE) onlyProxy {
+        if (newImplementation == address(0)) revert ZeroAddressInvalid();
         _proposeUpgrade(newImplementation);
     }
 
