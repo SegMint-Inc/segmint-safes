@@ -7,7 +7,7 @@ import { SelfAuthorized } from "../utils/SelfAuthorized.sol";
 /**
  * @title OwnerManager
  * @custom:note Modification of Gnosis Safe's `OwnerManager` to use custom errors.
- * https://github.com/safe-global/safe-contracts/blob/main/contracts/base/OwnerManager.sol
+ * @custom:reference https://github.com/safe-global/safe-contracts/blob/main/contracts/base/OwnerManager.sol
  */
 
 abstract contract OwnerManager is IOwnerManager, SelfAuthorized {
