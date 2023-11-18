@@ -10,8 +10,8 @@ import { Transaction } from "../types/DataTypes.sol";
  * @notice Encodes a `Transaction` struct in accordance with EIP712.
  */
 abstract contract TransactionEncoder is ITransactionEncoder, EIP712 {
-    /// @dev keccak256("Transaction(uint8 operation,address to,uint256 value,bytes data,uint256 nonce)");
-    bytes32 private constant _TRANSACTION_TYPEHASH = 0x50b485665d49aaf8f3dd2ff8d505569748e3466ae4f543247e673b667008bd66;
+    /// @dev keccak256("Transaction(uint8 operation,address to,uint256 value,bytes data,uint256 nonce,uint256 deadline)");
+    bytes32 private constant _TRANSACTION_TYPEHASH = 0x33b543d6d88a9ae409adf21994caa4f1fb2caa001d13be022d6bf4a3a5afc01d;
 
     /**
      * @inheritdoc ITransactionEncoder
@@ -36,7 +36,8 @@ abstract contract TransactionEncoder is ITransactionEncoder, EIP712 {
                     transaction.to,
                     transaction.value,
                     keccak256(transaction.data),
-                    transaction.nonce
+                    transaction.nonce,
+                    transaction.deadline
                 )
             )
         );

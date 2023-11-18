@@ -66,6 +66,9 @@ contract Safe is
         /// Checks: Ensure a valid nonce has been provided and update the current nonce.
         if (transaction.nonce != nonce++) revert NonceMismatch();
 
+        /// Checks: Ensure the transaction is still valid.
+        if (block.timestamp > transaction.deadline) revert TransactionDeadlinePassed();
+
         /// Get the EIP712 digest of the transaction.
         bytes32 txnHash = _encodeTransaction(transaction);
 
