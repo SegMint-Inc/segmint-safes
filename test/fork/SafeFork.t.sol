@@ -163,6 +163,12 @@ contract SafeForkTest is BaseTest {
 
         hoax(users.alice.account);
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
+        emit CallSuccess({ target: targets[0], payload: payloads[0] });
+        vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
+        emit CallSuccess({ target: targets[1], payload: payloads[1] });
+        vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
+        emit CallSuccess({ target: targets[2], payload: payloads[2] });
+        vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit TransactionSuccess({ txnHash: txnHash });
         userSafe.executeTransaction(txn, signatures);
 

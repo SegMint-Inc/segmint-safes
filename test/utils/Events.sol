@@ -27,4 +27,7 @@ abstract contract Events {
     event OwnerRemoved(address account);
     event OwnerSwapped(address oldOwner, address newOwner);
     event QuorumChanged(uint256 oldQuorum, uint256 newQuorum);
+
+    /// {MultiCall} Events.
+    event CallSuccess(address indexed target, bytes payload);
 }
