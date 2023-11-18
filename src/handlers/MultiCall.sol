@@ -19,6 +19,11 @@ abstract contract MultiCall is SelfAuthorized {
     error CallFailed();
 
     /**
+     * Emitted when a call is successfully made to a target.
+     */
+    event CallSuccess(address indexed target, bytes payload);
+
+    /**
      * Function used to execute an array of payloads to an array of targets.
      * @param targets Array of addresses to call.
      * @param payloads Array of calldata to forward to each target address.
@@ -27,8 +32,13 @@ abstract contract MultiCall is SelfAuthorized {
         if (targets.length != payloads.length) revert ArrayLengthMismatch();
 
         for (uint256 i = 0; i < targets.length; i++) {
-            (bool success,) = targets[i].call(payloads[i]);
+            address target = targets[i];
+            bytes calldata payload = payloads[i];
+
+            (bool success,) = target.call(payload);
             if (!success) revert CallFailed();
+
+            emit CallSuccess(target, payload);
         }
     }
 }
