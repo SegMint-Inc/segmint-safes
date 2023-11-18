@@ -33,7 +33,8 @@ contract SafeForkTest is BaseTest {
             to: WETH,
             value: depositAmount,
             data: "",
-            nonce: userSafe.nonce()
+            nonce: userSafe.nonce(),
+            deadline: block.timestamp
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
@@ -61,8 +62,14 @@ contract SafeForkTest is BaseTest {
         /// Transfer 1m USDT from Safe to Bob.
         bytes memory callData = abi.encodeWithSelector(IERC20.transfer.selector, users.bob.account, depositAmount);
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: USDT, value: 0, data: callData, nonce: userSafe.nonce() });
+        Transaction memory txn = Transaction({
+            operation: Operation.CALL,
+            to: USDT,
+            value: 0,
+            data: callData,
+            nonce: userSafe.nonce(),
+            deadline: block.timestamp
+        });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -89,8 +96,14 @@ contract SafeForkTest is BaseTest {
         /// Transfer 1m USDC from Safe to Bob.
         bytes memory callData = abi.encodeWithSelector(IERC20.transfer.selector, users.bob.account, depositAmount);
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: USDC, value: 0, data: callData, nonce: userSafe.nonce() });
+        Transaction memory txn = Transaction({
+            operation: Operation.CALL,
+            to: USDC,
+            value: 0,
+            data: callData,
+            nonce: userSafe.nonce(),
+            deadline: block.timestamp
+        });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -139,7 +152,8 @@ contract SafeForkTest is BaseTest {
             to: address(userSafe),
             value: 0,
             data: callData,
-            nonce: userSafe.nonce()
+            nonce: userSafe.nonce(),
+            deadline: block.timestamp
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
@@ -193,7 +207,8 @@ contract SafeForkTest is BaseTest {
             to: address(userSafe),
             value: 0,
             data: callData,
-            nonce: userSafe.nonce()
+            nonce: userSafe.nonce(),
+            deadline: block.timestamp
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
@@ -232,7 +247,8 @@ contract SafeForkTest is BaseTest {
             to: address(userSafe),
             value: 0,
             data: callData,
-            nonce: userSafe.nonce()
+            nonce: userSafe.nonce(),
+            deadline: block.timestamp
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);

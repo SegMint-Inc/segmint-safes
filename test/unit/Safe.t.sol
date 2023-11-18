@@ -130,7 +130,8 @@ contract SafeTest is BaseTest {
             to: address(mockERC721),
             value: 0,
             data: abi.encodeWithSelector(MockERC721.mint.selector, tokenId),
-            nonce: safeNonce
+            nonce: safeNonce,
+            deadline: block.timestamp
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
@@ -159,7 +160,8 @@ contract SafeTest is BaseTest {
             to: address(mockERC721),
             value: price,
             data: abi.encodeWithSelector(mockERC721.mintPaid.selector, tokenId),
-            nonce: 0
+            nonce: 0,
+            deadline: block.timestamp
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
@@ -186,8 +188,14 @@ contract SafeTest is BaseTest {
         bytes memory callData =
             abi.encodeWithSelector(mockERC721.transferFrom.selector, address(userSafe), users.bob.account, tokenId);
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(mockERC721), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = Transaction({
+            operation: Operation.CALL,
+            to: address(mockERC721),
+            value: 0,
+            data: callData,
+            nonce: 0,
+            deadline: block.timestamp
+        });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -207,7 +215,8 @@ contract SafeTest is BaseTest {
             to: address(mockERC1155),
             value: 0,
             data: abi.encodeWithSelector(MockERC1155.mint.selector, tokenId, amount),
-            nonce: 0
+            nonce: 0,
+            deadline: block.timestamp
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
@@ -232,7 +241,8 @@ contract SafeTest is BaseTest {
             to: address(mockERC1155),
             value: price,
             data: abi.encodeWithSelector(MockERC1155.mintPaid.selector, tokenId, amount),
-            nonce: 0
+            nonce: 0,
+            deadline: block.timestamp
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
@@ -260,8 +270,14 @@ contract SafeTest is BaseTest {
             mockERC1155.safeTransferFrom.selector, address(userSafe), users.bob.account, tokenId, amount, ""
         );
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(mockERC1155), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = Transaction({
+            operation: Operation.CALL,
+            to: address(mockERC1155),
+            value: 0,
+            data: callData,
+            nonce: 0,
+            deadline: block.timestamp
+        });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -280,8 +296,14 @@ contract SafeTest is BaseTest {
 
         bytes memory callData = abi.encodeWithSelector(mockERC20.transfer.selector, users.bob.account, amount);
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(mockERC20), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = Transaction({
+            operation: Operation.CALL,
+            to: address(mockERC20),
+            value: 0,
+            data: callData,
+            nonce: 0,
+            deadline: block.timestamp
+        });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -301,8 +323,14 @@ contract SafeTest is BaseTest {
 
         address receiver = address(0xbabe);
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: receiver, value: msgValue, data: "", nonce: 0 });
+        Transaction memory txn = Transaction({
+            operation: Operation.CALL,
+            to: receiver,
+            value: msgValue,
+            data: "",
+            nonce: 0,
+            deadline: block.timestamp
+        });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -320,7 +348,8 @@ contract SafeTest is BaseTest {
             to: address(mockERC721),
             value: 0,
             data: abi.encodeWithSelector(MockERC721.mint.selector, 2),
-            nonce: 0
+            nonce: 0,
+            deadline: block.timestamp
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
@@ -332,8 +361,14 @@ contract SafeTest is BaseTest {
 
     function testCannot_ExecuteTransaction_QuorumNotReached() public {
         bytes[] memory signatures = new bytes[](1);
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: users.alice.account, value: 0 ether, data: "", nonce: 0 });
+        Transaction memory txn = Transaction({
+            operation: Operation.CALL,
+            to: users.alice.account,
+            value: 0 ether,
+            data: "",
+            nonce: 0,
+            deadline: block.timestamp
+        });
 
         hoax(users.alice.account);
         vm.expectRevert(ISafe.QuorumNotReached.selector);
@@ -348,7 +383,8 @@ contract SafeTest is BaseTest {
             to: users.alice.account,
             value: 0 ether,
             data: "",
-            nonce: randNonce
+            nonce: randNonce,
+            deadline: block.timestamp
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
@@ -358,9 +394,35 @@ contract SafeTest is BaseTest {
         userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
     }
 
+    function testCannot_ExecuteTransaction_TransactionDeadlinePassed_Fuzzed(uint256 secondsPastDeadline) public {
+        secondsPastDeadline = bound(secondsPastDeadline, 1, type(uint16).max);
+
+        Transaction memory txn = Transaction({
+            operation: Operation.CALL,
+            to: users.alice.account,
+            value: 0 ether,
+            data: "",
+            nonce: 0,
+            deadline: block.timestamp
+        });
+
+        bytes32 txnHash = userSafe.encodeTransaction(txn);
+        vm.warp(txn.deadline + secondsPastDeadline);
+
+        hoax(users.alice.account);
+        vm.expectRevert(ISafe.TransactionDeadlinePassed.selector);
+        userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
+    }
+
     function testCannot_ExecuteTransaction_SignerNotOwner() public {
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: users.alice.account, value: 0 ether, data: "", nonce: 0 });
+        Transaction memory txn = Transaction({
+            operation: Operation.CALL,
+            to: users.alice.account,
+            value: 0 ether,
+            data: "",
+            nonce: 0,
+            deadline: block.timestamp
+        });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -375,8 +437,14 @@ contract SafeTest is BaseTest {
     }
 
     function testCannot_ExecuteTransaction_InvalidSignatureOrder() public {
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: users.alice.account, value: 0 ether, data: "", nonce: 0 });
+        Transaction memory txn = Transaction({
+            operation: Operation.CALL,
+            to: users.alice.account,
+            value: 0 ether,
+            data: "",
+            nonce: 0,
+            deadline: block.timestamp
+        });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -387,8 +455,14 @@ contract SafeTest is BaseTest {
     }
 
     function testCannot_ExecuteTransaction_SignerHasNotApproved() public {
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: users.alice.account, value: 0 ether, data: "", nonce: 0 });
+        Transaction memory txn = Transaction({
+            operation: Operation.CALL,
+            to: users.alice.account,
+            value: 0 ether,
+            data: "",
+            nonce: 0,
+            deadline: block.timestamp
+        });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
 
