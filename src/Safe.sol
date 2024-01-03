@@ -38,6 +38,11 @@ contract Safe is
     /// Transaction nonce.
     uint256 public nonce;
 
+    constructor() {
+        /// Prevent implementation contract from being initialized.
+        _disableInitializers();
+    }
+
     modifier onlyOwners() {
         _onlyOwners();
         _;
@@ -56,10 +61,13 @@ contract Safe is
      */
     function executeTransaction(Transaction calldata transaction, bytes[] calldata signatures) external onlyOwners {
         /// Checks: Ensure a valid number of signatures have been provided.
-        if (signatures.length < _quroum) revert QuorumNotReached();
+        if (signatures.length < _quorum) revert QuorumNotReached();
 
         /// Checks: Ensure a valid nonce has been provided and update the current nonce.
         if (transaction.nonce != nonce++) revert NonceMismatch();
+
+        /// Checks: Ensure the transaction is still valid.
+        if (block.timestamp > transaction.deadline) revert TransactionDeadlinePassed();
 
         /// Get the EIP712 digest of the transaction.
         bytes32 txnHash = _encodeTransaction(transaction);

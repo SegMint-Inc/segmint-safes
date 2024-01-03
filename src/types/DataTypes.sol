@@ -16,6 +16,7 @@ enum Operation {
  * @param value Amount of native token to provide with the call.
  * @param data Calldata to associate with the call.
  * @param nonce Safe nonce to associate with the call.
+ * @param deadline Timestamp by which the transaction is valid until.
  */
 struct Transaction {
     Operation operation;
@@ -23,4 +24,5 @@ struct Transaction {
     uint256 value;
     bytes data;
     uint256 nonce;
+    uint256 deadline;
 }

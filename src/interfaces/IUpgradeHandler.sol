@@ -26,6 +26,11 @@ interface IUpgradeHandler {
      */
     error UpgradeTimeLocked();
 
+    /**
+     * Thrown when trying to execute an upgrade via {UUPSUpgradeable.upgradeTo} or {UUPSUpgradeable.upgradeToAndCall}.
+     */
+    error UpgradeMethodBlocked();
+
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
     /*                          STRUCTS                           */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/

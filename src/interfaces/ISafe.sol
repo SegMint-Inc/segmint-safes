@@ -42,6 +42,11 @@ interface ISafe {
      */
     error NonceMismatch();
 
+    /**
+     * Thrown when the transaction deadline has passed.
+     */
+    error TransactionDeadlinePassed();
+
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
     /*                           EVENTS                           */
     /*.•°:°.´+˚.*°.˚:*.´•*.+°.•°:´*.´•*.•°.•°:°.´:•˚°.*°.˚:*.´+°.•*/

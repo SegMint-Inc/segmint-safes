@@ -33,7 +33,8 @@ contract SafeForkTest is BaseTest {
             to: WETH,
             value: depositAmount,
             data: "",
-            nonce: userSafe.nonce()
+            nonce: userSafe.nonce(),
+            deadline: block.timestamp
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
@@ -61,8 +62,14 @@ contract SafeForkTest is BaseTest {
         /// Transfer 1m USDT from Safe to Bob.
         bytes memory callData = abi.encodeWithSelector(IERC20.transfer.selector, users.bob.account, depositAmount);
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: USDT, value: 0, data: callData, nonce: userSafe.nonce() });
+        Transaction memory txn = Transaction({
+            operation: Operation.CALL,
+            to: USDT,
+            value: 0,
+            data: callData,
+            nonce: userSafe.nonce(),
+            deadline: block.timestamp
+        });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -89,8 +96,14 @@ contract SafeForkTest is BaseTest {
         /// Transfer 1m USDC from Safe to Bob.
         bytes memory callData = abi.encodeWithSelector(IERC20.transfer.selector, users.bob.account, depositAmount);
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: USDC, value: 0, data: callData, nonce: userSafe.nonce() });
+        Transaction memory txn = Transaction({
+            operation: Operation.CALL,
+            to: USDC,
+            value: 0,
+            data: callData,
+            nonce: userSafe.nonce(),
+            deadline: block.timestamp
+        });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -139,7 +152,8 @@ contract SafeForkTest is BaseTest {
             to: address(userSafe),
             value: 0,
             data: callData,
-            nonce: userSafe.nonce()
+            nonce: userSafe.nonce(),
+            deadline: block.timestamp
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
@@ -148,6 +162,12 @@ contract SafeForkTest is BaseTest {
         bytes[] memory signatures = getOrderedSignatures(txnHash);
 
         hoax(users.alice.account);
+        vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
+        emit CallSuccess({ target: targets[0], payload: payloads[0] });
+        vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
+        emit CallSuccess({ target: targets[1], payload: payloads[1] });
+        vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
+        emit CallSuccess({ target: targets[2], payload: payloads[2] });
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
         emit TransactionSuccess({ txnHash: txnHash });
         userSafe.executeTransaction(txn, signatures);
@@ -193,7 +213,8 @@ contract SafeForkTest is BaseTest {
             to: address(userSafe),
             value: 0,
             data: callData,
-            nonce: userSafe.nonce()
+            nonce: userSafe.nonce(),
+            deadline: block.timestamp
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
@@ -232,7 +253,8 @@ contract SafeForkTest is BaseTest {
             to: address(userSafe),
             value: 0,
             data: callData,
-            nonce: userSafe.nonce()
+            nonce: userSafe.nonce(),
+            deadline: block.timestamp
         });
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);

@@ -19,8 +19,7 @@ contract OwnerManagerTest is BaseTest {
 
         bytes memory callData = abi.encodeWithSelector(IOwnerManager.addOwner.selector, users.eve.account, initQuorum);
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -52,8 +51,7 @@ contract OwnerManagerTest is BaseTest {
 
         bytes memory callData = abi.encodeWithSelector(IOwnerManager.addOwner.selector, users.eve.account, newQuorum);
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -94,8 +92,7 @@ contract OwnerManagerTest is BaseTest {
         bytes memory callData =
             abi.encodeWithSelector(IOwnerManager.addOwner.selector, address(0), userSafe.getQuorum());
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -114,8 +111,7 @@ contract OwnerManagerTest is BaseTest {
             userSafe.getQuorum()
         );
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -133,8 +129,7 @@ contract OwnerManagerTest is BaseTest {
             userSafe.getQuorum()
         );
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -152,8 +147,7 @@ contract OwnerManagerTest is BaseTest {
             userSafe.getQuorum()
         );
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -176,8 +170,7 @@ contract OwnerManagerTest is BaseTest {
             newQuorum
         );
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -205,7 +198,7 @@ contract OwnerManagerTest is BaseTest {
 
         hoax(notSafe);
         vm.expectRevert(SelfAuthorized.CallerNotSelf.selector);
-        userSafe.removeOwner({ prtOwner: users.alice.account, oldOwner: users.bob.account, newQuorum: 2 });
+        userSafe.removeOwner({ pointerOwner: users.alice.account, oldOwner: users.bob.account, newQuorum: 2 });
     }
 
     function testCannot_RemoveOwner_RemovalBreaksQuorum() public {
@@ -217,8 +210,7 @@ contract OwnerManagerTest is BaseTest {
             userSafe.getQuorum()
         );
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -238,8 +230,7 @@ contract OwnerManagerTest is BaseTest {
             userSafe.getQuorum() - 1
         );
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -259,8 +250,7 @@ contract OwnerManagerTest is BaseTest {
             userSafe.getQuorum() - 1
         );
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -280,8 +270,7 @@ contract OwnerManagerTest is BaseTest {
             userSafe.getQuorum() - 1
         );
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -301,8 +290,7 @@ contract OwnerManagerTest is BaseTest {
             users.eve.account
         );
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -325,8 +313,7 @@ contract OwnerManagerTest is BaseTest {
             address(0)
         );
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -346,8 +333,7 @@ contract OwnerManagerTest is BaseTest {
             address(0x01)
         );
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -367,8 +353,7 @@ contract OwnerManagerTest is BaseTest {
             address(userSafe)
         );
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -385,8 +370,7 @@ contract OwnerManagerTest is BaseTest {
             IOwnerManager.swapOwner.selector, users.alice.account, users.bob.account, users.charlie.account
         );
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -402,8 +386,7 @@ contract OwnerManagerTest is BaseTest {
         bytes memory callData =
             abi.encodeWithSelector(IOwnerManager.swapOwner.selector, users.alice.account, address(0), users.eve.account);
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -420,8 +403,7 @@ contract OwnerManagerTest is BaseTest {
             IOwnerManager.swapOwner.selector, users.alice.account, address(0x01), users.eve.account
         );
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -441,8 +423,7 @@ contract OwnerManagerTest is BaseTest {
             users.eve.account
         );
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -460,8 +441,7 @@ contract OwnerManagerTest is BaseTest {
 
         bytes memory callData = abi.encodeWithSelector(IOwnerManager.changeQuorum.selector, newQuorum);
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -486,8 +466,7 @@ contract OwnerManagerTest is BaseTest {
     function testCannot_ChangeQuorum_InvalidQuorum_UnderMin() public {
         bytes memory callData = abi.encodeWithSelector(IOwnerManager.changeQuorum.selector, 0);
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -503,8 +482,7 @@ contract OwnerManagerTest is BaseTest {
         uint256 badQuorum = userSafe.ownerCount() + 1;
         bytes memory callData = abi.encodeWithSelector(IOwnerManager.changeQuorum.selector, badQuorum);
 
-        Transaction memory txn =
-            Transaction({ operation: Operation.CALL, to: address(userSafe), value: 0, data: callData, nonce: 0 });
+        Transaction memory txn = getGenericTransaction(callData);
 
         bytes32 txnHash = userSafe.encodeTransaction(txn);
         approveWithOwners(userSafe, txnHash);
@@ -514,5 +492,18 @@ contract OwnerManagerTest is BaseTest {
         emit TransactionFailed({ txnHash: txnHash });
         userSafe.executeTransaction(txn, getOrderedSignatures(txnHash));
         /// Reverts with InvalidOwner selector.
+    }
+
+    /* Helper Function */
+
+    function getGenericTransaction(bytes memory callData) internal view returns (Transaction memory) {
+        return Transaction({
+            operation: Operation.CALL,
+            to: address(userSafe),
+            value: 0,
+            data: callData,
+            nonce: 0,
+            deadline: block.timestamp + 1 days
+        });
     }
 }
