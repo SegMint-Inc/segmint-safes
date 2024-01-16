@@ -4,6 +4,7 @@ pragma solidity 0.8.19;
 import { OwnableRoles } from "solady/src/auth/OwnableRoles.sol";
 import { LibClone } from "solady/src/utils/LibClone.sol";
 import { Initializable } from "@openzeppelin/proxy/utils/Initializable.sol";
+import { AccessRoles } from "../access/AccessRoles.sol";
 import { ISafeFactory } from "../interfaces/ISafeFactory.sol";
 import { ISafe } from "../interfaces/ISafe.sol";
 import { UpgradeHandler } from "../handlers/UpgradeHandler.sol";
@@ -15,9 +16,6 @@ import { UpgradeHandler } from "../handlers/UpgradeHandler.sol";
 
 contract SafeFactory is ISafeFactory, OwnableRoles, Initializable, UpgradeHandler {
     using LibClone for address;
-
-    /// `keccak256("ADMIN_ROLE");`
-    uint256 public constant ADMIN_ROLE = 0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775;
 
     /// @dev Safe implementation address.
     address public safe;
@@ -36,7 +34,7 @@ contract SafeFactory is ISafeFactory, OwnableRoles, Initializable, UpgradeHandle
         if (_admin == address(0) || _safe == address(0)) revert ZeroAddressInvalid();
 
         _initializeOwner(msg.sender);
-        _grantRoles(_admin, ADMIN_ROLE);
+        _grantRoles({ user: _admin, roles: AccessRoles.ADMIN_ROLE });
         safe = _safe;
     }
 
@@ -85,7 +83,7 @@ contract SafeFactory is ISafeFactory, OwnableRoles, Initializable, UpgradeHandle
     /**
      * @inheritdoc ISafeFactory
      */
-    function proposeUpgrade(address newImplementation) external onlyRoles(ADMIN_ROLE) onlyProxy {
+    function proposeUpgrade(address newImplementation) external onlyRoles(AccessRoles.ADMIN_ROLE) onlyProxy {
         if (newImplementation == address(0)) revert ZeroAddressInvalid();
         _proposeUpgrade(newImplementation);
     }
@@ -93,14 +91,14 @@ contract SafeFactory is ISafeFactory, OwnableRoles, Initializable, UpgradeHandle
     /**
      * @inheritdoc ISafeFactory
      */
-    function cancelUpgrade() external onlyRoles(ADMIN_ROLE) onlyProxy {
+    function cancelUpgrade() external onlyRoles(AccessRoles.ADMIN_ROLE) onlyProxy {
         _cancelUpgrade();
     }
 
     /**
      * @inheritdoc ISafeFactory
      */
-    function executeUpgrade(bytes memory payload) external onlyRoles(ADMIN_ROLE) onlyProxy {
+    function executeUpgrade(bytes memory payload) external onlyRoles(AccessRoles.ADMIN_ROLE) onlyProxy {
         _executeUpgrade(payload);
     }
 
@@ -120,5 +118,5 @@ contract SafeFactory is ISafeFactory, OwnableRoles, Initializable, UpgradeHandle
     /**
      * Overriden to ensure that only callers with the correct role can upgrade the implementation.
      */
-    function _authorizeUpgrade(address newImplementation) internal override onlyRoles(ADMIN_ROLE) { }
+    function _authorizeUpgrade(address newImplementation) internal override onlyRoles(AccessRoles.ADMIN_ROLE) { }
 }
