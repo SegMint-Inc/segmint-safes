@@ -4,6 +4,8 @@ pragma solidity 0.8.19;
 import "./Base.sol";
 
 import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
+import { AccessRoles } from "../src/access/AccessRoles.sol";
+
 import { ISafe } from "../src/interfaces/ISafe.sol";
 import { ISafeFactory } from "../src/interfaces/ISafeFactory.sol";
 import { IOwnerManager } from "../src/interfaces/IOwnerManager.sol";

@@ -12,8 +12,7 @@ contract SafeFactoryTest is BaseTest {
         assertEq(safeFactory.owner(), address(this));
         assertEq(safeFactory.safe(), address(safe));
 
-        uint256 adminRole = safeFactory.ADMIN_ROLE();
-        assertTrue(safeFactory.hasAllRoles(users.admin.account, adminRole));
+        assertTrue(safeFactory.hasAllRoles(users.admin.account, AccessRoles.ADMIN_ROLE));
 
         (string memory name, string memory version) = safeFactory.nameAndVersion();
         assertEq(name, "Safe Factory");
@@ -29,7 +28,7 @@ contract SafeFactoryTest is BaseTest {
         bytes memory payload = abi.encodeWithSelector(funcSelector, randomAdmin, randomImplementation);
         SafeFactory factory = SafeFactory(address(new ERC1967Proxy({ _logic: address(testFactory), _data: payload })));
 
-        assertTrue(factory.hasAllRoles(randomAdmin, factory.ADMIN_ROLE()));
+        assertTrue(factory.hasAllRoles(randomAdmin, AccessRoles.ADMIN_ROLE));
         assertEq(factory.owner(), address(this));
         assertEq(factory.safe(), randomImplementation);
     }
