@@ -4,6 +4,7 @@ pragma solidity 0.8.19;
 import "./Base.sol";
 
 import { IERC20 } from "@openzeppelin/token/ERC20/IERC20.sol";
+import { ECDSA } from "solady/src/utils/ECDSA.sol";
 import { AccessRoles } from "../src/access/AccessRoles.sol";
 
 import { ISafe } from "../src/interfaces/ISafe.sol";
@@ -26,6 +27,7 @@ import { Errors } from "./utils/Errors.sol";
 import { User, Users } from "./utils/Users.sol";
 
 contract BaseTest is Base, Events, Errors {
+    using ECDSA for bytes32;
     Users public users;
 
     MockERC20 public mockERC20;
@@ -97,7 +99,7 @@ contract BaseTest is Base, Events, Errors {
     }
 
     function signTransactionHash(bytes32 txnHash, uint256 privateKey) internal pure returns (bytes memory) {
-        (uint8 v, bytes32 r, bytes32 s) = vm.sign(privateKey, txnHash);
+        (uint8 v, bytes32 r, bytes32 s) = vm.sign(privateKey, txnHash.toEthSignedMessageHash());
         return abi.encodePacked(r, s, v);
     }
 

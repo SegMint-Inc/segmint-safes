@@ -110,7 +110,7 @@ contract Safe is
             /// Recover the signer.
             /// @dev It should be noted that Solady's {ECDSA.recover} does not allow for failed recovery resulting
             /// in the zero address. Short form signatures (EIP-2098) signatures are also not deemed as valid.
-            address recoveredSigner = txnHash.recover(signature);
+            address recoveredSigner = txnHash.toEthSignedMessageHash().recover(signature);
 
             /// Checks: Ensure the recovered signer is an owner.
             if (!_isOwner(recoveredSigner)) revert SignerNotOwner();

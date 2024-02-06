@@ -2,11 +2,15 @@
 pragma solidity 0.8.19;
 
 import "../BaseTest.sol";
+import { ECDSA } from "solady/src/utils/ECDSA.sol";
+import { console2 } from "forge-std/console2.sol";
 
 /**
  * @dev Tests that require a fork of mainnet to pass.
  */
 contract SafeForkTest is BaseTest {
+    using ECDSA for bytes32;
+
     Safe public userSafe;
 
     /// Respective mainnet addresses.
