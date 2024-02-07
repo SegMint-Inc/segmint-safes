@@ -24,8 +24,10 @@ interface ISafeFactory {
      * Emitted when a new safe is created.
      * @param user Address of the account that created the safe.
      * @param safe Address of the newly created safe.
+     * @param safeOwners Array of Safe owners.
+     * @param safeQuorum Safe quorum value.
      */
-    event SafeCreated(address indexed user, address indexed safe);
+    event SafeCreated(address indexed user, address indexed safe, address[] safeOwners, uint256 safeQuorum);
 
     /*´:°•.°+.*•´.*:˚.°*.˚•´.°:°•.°•.*•´.*:˚.°*.˚•´.°:°•.°+.*•´.*:*/
     /*                         FUNCTIONS                          */

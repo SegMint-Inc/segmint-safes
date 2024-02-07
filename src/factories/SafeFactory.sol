@@ -51,7 +51,7 @@ contract SafeFactory is ISafeFactory, OwnableRoles, Initializable, UpgradeHandle
         /// Initialize the Safe.
         ISafe(newSafe).initialize(owners, quorum);
 
-        emit ISafeFactory.SafeCreated({ user: msg.sender, safe: newSafe });
+        emit ISafeFactory.SafeCreated({ user: msg.sender, safe: newSafe, safeOwners: owners, safeQuorum: quorum });
     }
 
     /**

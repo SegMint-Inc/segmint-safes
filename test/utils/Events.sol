@@ -3,7 +3,7 @@ pragma solidity 0.8.19;
 
 abstract contract Events {
     /// {ISafeFactory} Events.
-    event SafeCreated(address indexed user, address indexed safe);
+    event SafeCreated(address indexed user, address indexed safe, address[] safeOwners, uint256 safeQuorum);
 
     /// {IUpgradeHandler} Events.
     event UpgradeProposed(address indexed admin, address implementation, uint40 deadline);

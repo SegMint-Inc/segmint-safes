@@ -71,7 +71,7 @@ contract SafeFactoryTest is BaseTest {
         address[] memory owners = getDefaultOwners();
 
         vm.expectEmit({ checkTopic1: true, checkTopic2: false, checkTopic3: false, checkData: true });
-        emit SafeCreated({ user: address(this), safe: address(0) });
+        emit SafeCreated({ user: address(this), safe: address(0), safeOwners: owners, safeQuorum: owners.length });
         safeFactory.createSafe({ owners: owners, quorum: owners.length });
         assertEq(safeFactory.getNonce(address(this)), 1);
 
